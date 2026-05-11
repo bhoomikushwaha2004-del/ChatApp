@@ -1,13 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import OnBoardingScreens from '../screens/OnBoardingScreens';
 import Login from '../screens/Login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const StackNavigation = () => {
-  const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator();
 
+const StackNavigation = () => {
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
 
   useEffect(() => {
@@ -23,30 +22,29 @@ const StackNavigation = () => {
 
   if (isFirstLaunch === null) {
     return null;
-  } else if (isFirstLaunch === true) {
-    return (
-      <Stack.Navigator>
-        <Stack.Screen
-          name="onboard"
-          component={OnBoardingScreens}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="login" component={Login} />
-      </Stack.Navigator>
-    );
   }
-   else {
-    <Login />
-   }
+
   return (
-    // <Stack.Navigator >
-    //   <Stack.Screen name="onboard" component={OnBoardingScreens} options={{headerShown:false}} />
-    //   <Stack.Screen name='login' component={Login} />
-    // </Stack.Navigator>
-    <Login />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {isFirstLaunch ? (
+        <>
+          <Stack.Screen
+            name="onboard"
+            component={OnBoardingScreens}
+          />
+          <Stack.Screen
+            name="login"
+            component={Login}
+          />
+        </>
+      ) : (
+        <Stack.Screen
+          name="login"
+          component={Login}
+        />
+      )}
+    </Stack.Navigator>
   );
 };
 
 export default StackNavigation;
-
-const styles = StyleSheet.create({});
