@@ -22,6 +22,8 @@ const Login = () => {
 
   const navigation = useNavigation()
 
+  const { login } = useContext(AuthContext)
+
 //   const {login, googleLogin, fbLogin} = useContext(AuthContext);
 
   return (
@@ -53,7 +55,7 @@ const Login = () => {
 
       <FormButton
         buttonTitle="Sign In"
-        onPress={()=> Alert.alert('Sign In Clicked!!')}
+        onPress={()=> login(email,password)}
       />
 
       <TouchableOpacity style={styles.forgotButton} onPress={() => {}}>

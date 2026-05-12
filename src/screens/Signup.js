@@ -23,6 +23,8 @@ const Signup = () => {
 
   const navigation = useNavigation();
 
+  const { register } = useContext(AuthContext)
+
   //   const {login, googleLogin, fbLogin} = useContext(AuthContext);
 
   return (
@@ -59,7 +61,14 @@ const Signup = () => {
 
       <FormButton
         buttonTitle="Sign Up"
-        onPress={() => Alert.alert('Sign Up Clicked!!')}
+        onPress={() => {
+          if(password !== confirmPassword) {
+            Alert.alert('Password must be match')
+            return ;
+          }
+
+          register(email,password)
+        }}
       />
 
       <View style={styles.textPrivate}>

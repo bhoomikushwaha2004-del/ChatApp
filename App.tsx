@@ -1,16 +1,19 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import StackNavigation from './src/navigation/StackNavigation'
+import StackNavigation from './src/navigation/StackNavigation';
+import { AuthProvider } from './src/navigation/AuthProvider';
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <StackNavigation />
-    </NavigationContainer>
-  )
-}
+    <AuthProvider>
+      <NavigationContainer>
+        <StackNavigation />
+      </NavigationContainer>
+    </AuthProvider>
+  );
+};
 
-export default App
+export default App;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
