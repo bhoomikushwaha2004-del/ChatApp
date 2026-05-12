@@ -6,7 +6,9 @@ import {
   Image,
   Platform,
   StyleSheet,
-  ScrollView
+  ScrollView,
+  StatusBar,
+  Alert
 } from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
@@ -24,6 +26,7 @@ const Login = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+    <StatusBar barStyle={'dark-content'}/>
       <Image
         source={require('../assets/rn-social-logo.png')}
         style={styles.logo}
@@ -50,7 +53,7 @@ const Login = () => {
 
       <FormButton
         buttonTitle="Sign In"
-        
+        onPress={()=> Alert.alert('Sign In Clicked!!')}
       />
 
       <TouchableOpacity style={styles.forgotButton} onPress={() => {}}>
@@ -79,7 +82,7 @@ const Login = () => {
 
       <TouchableOpacity
         style={styles.forgotButton}
-        onPress={() => navigation.navigate('Signup')}>
+        onPress={() => navigation.navigate('signup')}>
         <Text style={styles.navButtonText}>
           Don't have an acount? Create here
         </Text>
