@@ -22,7 +22,7 @@ const Login = () => {
 
   const navigation = useNavigation()
 
-  const { login } = useContext(AuthContext)
+  const { login ,googleLogin} = useContext(AuthContext)
 
 //   const {login, googleLogin, fbLogin} = useContext(AuthContext);
 

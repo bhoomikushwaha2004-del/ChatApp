@@ -6,6 +6,7 @@ import Signup from '../screens/Signup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from './AuthProvider';
 import Home from '../screens/Home';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,8 @@ const StackNavigation = () => {
         setIsFirstLaunch(false);
       }
 
+
+      GoogleSignin.configure({ webClientId:'51246210108-jrt7jfn89eoscee0ka8enmln5tgn54c9.apps.googleusercontent.com',})
     });
   }, []);
 

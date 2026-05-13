@@ -23,7 +23,7 @@ const Signup = () => {
 
   const navigation = useNavigation();
 
-  const { register } = useContext(AuthContext)
+  const { register, googleLogin } = useContext(AuthContext)
 
   //   const {login, googleLogin, fbLogin} = useContext(AuthContext);
 

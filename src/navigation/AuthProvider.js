@@ -1,4 +1,5 @@
 import auth from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import React, {createContext, useState, useEffect} from 'react';
 
 export const AuthContext = createContext();
@@ -37,6 +38,20 @@ export const AuthProvider = ({children}) => {
     }
   };
 
+  const googleLogin= async () => {
+    try {
+      const { idToken } = await GoogleSignin.signIn()
+
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+      await  auth().signInWithCredential(googleCredential)
+    }
+    catch(err) {
+      console.log(err);
+      
+    }
+  }
+
   const logout = async () => {
     try {
       await auth().signOut();
@@ -53,6 +68,7 @@ export const AuthProvider = ({children}) => {
         login,
         register,
         logout,
+        googleLogin
       }}>
       {children}
     </AuthContext.Provider>
