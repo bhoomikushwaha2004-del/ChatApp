@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:51246210108:android:401a149b4ee7ef24f27739",
+        "mobilesdk_app_id": "1:51246210108:android:2945b296caddead4f27739",
         "android_client_info": {
-          "package_name": "com.chatapp"
+          "package_name": "com.bhoomi.chatapp"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "51246210108-ojtmmqotd5t9hsgpb29pvsdkjngese23.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bhoomi.chatapp",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
         {
           "client_id": "51246210108-jrt7jfn89eoscee0ka8enmln5tgn54c9.apps.googleusercontent.com",
           "client_type": 3

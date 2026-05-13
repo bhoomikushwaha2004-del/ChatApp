@@ -27,7 +27,9 @@ const StackNavigation = () => {
       }
 
 
-      GoogleSignin.configure({ webClientId:'51246210108-jrt7jfn89eoscee0ka8enmln5tgn54c9.apps.googleusercontent.com',})
+      GoogleSignin.configure({ webClientId:'51246210108-ojtmmqotd5t9hsgpb29pvsdkjngese23.apps.googleusercontent.com',
+        offlineAccess:true
+      })
     });
   }, []);
 

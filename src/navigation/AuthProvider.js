@@ -40,6 +40,9 @@ export const AuthProvider = ({children}) => {
 
   const googleLogin= async () => {
     try {
+
+      await GoogleSignin.hasPlayServices()
+
       const { idToken } = await GoogleSignin.signIn()
 
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);

@@ -1,4 +1,4 @@
-package com.chatapp
+package com.bhoomi.chatapp
 
 import android.app.Application
 import com.facebook.react.PackageList
