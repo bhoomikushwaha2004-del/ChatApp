@@ -23,7 +23,7 @@ const Signup = () => {
 
   const navigation = useNavigation();
 
-  const { register, googleLogin } = useContext(AuthContext)
+  const { register, googleLogin, fbLogin } = useContext(AuthContext)
 
   //   const {login, googleLogin, fbLogin} = useContext(AuthContext);
 
@@ -93,6 +93,7 @@ const Signup = () => {
         btnType="facebook"
         color="#4867aa"
         backgroundColor="#e6eaf4"
+        onPress={() => fbLogin()}
       />
 
       <SocialButton

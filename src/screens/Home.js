@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, StatusBar} from 'react-native';
 import {AuthContext} from '../navigation/AuthProvider';
 
 const Home = () => {
@@ -7,6 +7,8 @@ const Home = () => {
   const {logout, user} = useContext(AuthContext);
 
   return (
+    <>
+    <StatusBar barStyle={'dark-content'} />
     <View style={styles.container}>
 
       <Text style={styles.text}>
@@ -24,6 +26,8 @@ const Home = () => {
       </TouchableOpacity>
 
     </View>
+    </>
+    
   );
 };
 

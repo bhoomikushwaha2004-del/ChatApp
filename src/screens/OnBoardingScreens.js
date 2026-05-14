@@ -41,7 +41,7 @@ const OnBoardingScreens = () => {
       <StatusBar barStyle={'dark-content'} />
       <Onboarding
         onSkip={() => navigation.replace('login')}
-        onDone={() => navigation.navigate('login')}
+        onDone={() => navigation.replace('login')}
         DoneButtonComponent={Done}
         DotComponent={Dots}
         pages={[

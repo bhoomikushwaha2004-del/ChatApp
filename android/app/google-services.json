@@ -15,7 +15,7 @@
       "oauth_client": [
         {
           "client_id": "51246210108-ojtmmqotd5t9hsgpb29pvsdkjngese23.apps.googleusercontent.com",
-          "client_type": 1,
+          "client_type": 3,
           "android_info": {
             "package_name": "com.bhoomi.chatapp",
             "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"

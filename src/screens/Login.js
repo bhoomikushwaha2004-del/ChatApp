@@ -22,7 +22,7 @@ const Login = () => {
 
   const navigation = useNavigation()
 
-  const { login ,googleLogin} = useContext(AuthContext)
+  const { login ,googleLogin, fbLogin} = useContext(AuthContext)
 
 //   const {login, googleLogin, fbLogin} = useContext(AuthContext);
 
@@ -69,7 +69,7 @@ const Login = () => {
             btnType="facebook"
             color="#4867aa"
             backgroundColor="#e6eaf4"
-            
+            onPress={() => fbLogin()}
           />
 
           <SocialButton
