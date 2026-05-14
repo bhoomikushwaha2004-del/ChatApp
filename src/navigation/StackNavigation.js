@@ -5,8 +5,8 @@ import Login from '../screens/Login';
 import Signup from '../screens/Signup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from './AuthProvider';
-import Home from '../screens/Home';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import BottomTabs from './BottomTabs'
 
 const Stack = createNativeStackNavigator();
 
@@ -42,8 +42,8 @@ const StackNavigation = () => {
 
       {user ? (
         <Stack.Screen
-          name="home"
-          component={Home}
+          name="main"
+          component={BottomTabs}
         />
       ) : (
         <>
