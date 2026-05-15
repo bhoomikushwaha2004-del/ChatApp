@@ -1,4 +1,3 @@
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {
   View,
@@ -85,7 +84,7 @@ const Chats = () => {
         <FlatList
           data={users}
           keyExtractor={item => item.id}
-          renderItem={ChatList}
+          renderItem={({item}) => <ChatList item={item} />}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             paddingBottom: 100,
