@@ -1,132 +1,282 @@
+// AUTHPROVIDER.JS
+
 import auth from '@react-native-firebase/auth';
+
+import firestore from '@react-native-firebase/firestore';
+
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import React, { createContext, useState, useEffect } from 'react';
-import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
-import firestore from '@react-native-firebase/firestore'
 
-export const AuthContext = createContext();
+import React, {
+  createContext,
+  useState,
+  useEffect,
+} from 'react';
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+import {
+  LoginManager,
+  AccessToken,
+} from 'react-native-fbsdk-next';
+
+export const AuthContext =
+  createContext();
+
+export const AuthProvider = ({
+  children,
+}) => {
+
+  const [user, setUser] =
+    useState(null);
+
+  const [loading, setLoading] =
+    useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth().onAuthStateChanged(user => {
-      setUser(user);
-      if (loading) {
-        setLoading(false);
-      }
-    });
+
+    const unsubscribe =
+      auth().onAuthStateChanged(
+        user => {
+
+          setUser(user);
+
+          if (loading) {
+            setLoading(false);
+          }
+        },
+      );
 
     return unsubscribe;
+
   }, []);
 
-  const login = async (email, password) => {
-    try {
-      const userCredential = await auth().signInWithEmailAndPassword(email, password);
+  // LOGIN
 
-      const user = userCredential.user;
+  const login = async (
+    email,
+    password,
+  ) => {
+
+    try {
+
+      const userCredential =
+        await auth()
+          .signInWithEmailAndPassword(
+            email,
+            password,
+          );
+
+      const user =
+        userCredential.user;
 
       await firestore()
         .collection('users')
         .doc(user.uid)
         .set({
-          uid:user.uid,
-          name:user.displayName || 'no name',
-          email:user.email,
-          image:user.user.photoURL,
-        })
+          uid: user.uid,
+
+          name:
+            user.displayName ||
+            'No Name',
+
+          email: user.email,
+
+          image:
+            user.photoURL || '',
+        });
 
     } catch (e) {
       alert(e.message);
     }
   };
 
-  const register = async (email, password) => {
+  // REGISTER
+
+  const register = async (
+    name,
+    email,
+    password,
+  ) => {
+
     try {
-      await auth().createUserWithEmailAndPassword(email, password);
+
+      const userCredential =
+        await auth()
+          .createUserWithEmailAndPassword(
+            email,
+            password,
+          );
+
+      const user =
+        userCredential.user;
+
+      // SAVE NAME
+
+      await user.updateProfile({
+        displayName: name,
+      });
+
+      // SAVE FIRESTORE
 
       await firestore()
         .collection('users')
         .doc(user.uid)
         .set({
-          uid:user.uid,
-          name:user.displayName,
-          email:user.email,
-          image:user.user.photoURL,
-        })
+          uid: user.uid,
+
+          name: name,
+
+          email: user.email,
+
+          image:
+            user.photoURL || '',
+        });
 
     } catch (e) {
       alert(e.message);
     }
   };
+
+  // LOGOUT
 
   const logout = async () => {
+
     try {
+
       await auth().signOut();
+
     } catch (e) {
       alert(e.message);
     }
   };
 
+  // GOOGLE LOGIN
+
   const googleLogin = async () => {
+
     try {
+
       await GoogleSignin.hasPlayServices();
 
-      // force account picker
       await GoogleSignin.signOut();
 
-      const userInfo = await GoogleSignin.signIn();
+      const userInfo =
+        await GoogleSignin.signIn();
 
-      console.log(userInfo);
-
-      const idToken = userInfo?.data?.idToken || userInfo?.idToken;
+      const idToken =
+        userInfo?.data?.idToken ||
+        userInfo?.idToken;
 
       if (!idToken) {
-        throw new Error('No ID token found');
+        throw new Error(
+          'No ID token found',
+        );
       }
 
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      const googleCredential =
+        auth.GoogleAuthProvider.credential(
+          idToken,
+        );
 
-      await auth().signInWithCredential(googleCredential);
+      const userCredential =
+        await auth()
+          .signInWithCredential(
+            googleCredential,
+          );
+
+      const user =
+        userCredential.user;
+
+      await firestore()
+        .collection('users')
+        .doc(user.uid)
+        .set({
+          uid: user.uid,
+
+          name:
+            user.displayName ||
+            'No Name',
+
+          email: user.email,
+
+          image:
+            user.photoURL || '',
+        });
+
     } catch (err) {
-      console.log('GOOGLE ERROR:', err);
+      console.log(
+        'GOOGLE ERROR:',
+        err,
+      );
     }
   };
 
+  // FACEBOOK LOGIN
+
   const fbLogin = async () => {
+
     try {
-      const result = await LoginManager.logInWithPermissions([
-        'public_profile',
-        'email',
-      ]);
+
+      const result =
+        await LoginManager
+          .logInWithPermissions([
+            'public_profile',
+            'email',
+          ]);
 
       if (result.isCancelled) {
-        console.log('User cancelled the login process');
         return;
       }
 
-      const data = await AccessToken.getCurrentAccessToken();
+      const data =
+        await AccessToken
+          .getCurrentAccessToken();
 
       if (!data) {
-        throw new Error('Something went wrong obtaining access token');
+        throw new Error(
+          'Something went wrong',
+        );
       }
 
-      const facebookCredential = auth.FacebookAuthProvider.credential(
-        data.accessToken,
-      );
+      const facebookCredential =
+        auth.FacebookAuthProvider.credential(
+          data.accessToken,
+        );
 
-      const userCredential = await auth().signInWithCredential(
-        facebookCredential,
-      );
+      const userCredential =
+        await auth()
+          .signInWithCredential(
+            facebookCredential,
+          );
 
-      console.log('FB LOGIN SUCCESS', userCredential);
+      const user =
+        userCredential.user;
+
+      await firestore()
+        .collection('users')
+        .doc(user.uid)
+        .set({
+          uid: user.uid,
+
+          name:
+            user.displayName ||
+            'No Name',
+
+          email: user.email,
+
+          image:
+            user.photoURL || '',
+        });
+
     } catch (err) {
-      console.log('FB LOGIN ERROR:', err);
+
+      console.log(
+        'FB LOGIN ERROR:',
+        err,
+      );
     }
   };
 
   return (
+
     <AuthContext.Provider
       value={{
         user,
@@ -136,9 +286,10 @@ export const AuthProvider = ({ children }) => {
         logout,
         googleLogin,
         fbLogin,
-      }}
-    >
+      }}>
+
       {children}
+
     </AuthContext.Provider>
   );
 };

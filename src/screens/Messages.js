@@ -24,11 +24,15 @@ const Messages = () => {
 
   const [lastDoc, setLastDoc] = useState(null);
 
+  const currentUser = auth().currentUser;
+
+  const otherUser = { uid : '999'}
+  
   const roomId = currentUser.uid > otherUser.uid ?
                     `${currentUser.uid}_${otherUser.uid}` :
                     `${otherUser.uid}_${currentUser.uid}`
 
-  const currentUser = auth().currentUser;
+  
   // REALTIME LISTENER
 
   useEffect(() => {
@@ -75,8 +79,8 @@ const Messages = () => {
         .collection('messages')
         .add({
           text: message,
-          senderId: currentUser.id,
-          senderName: currentUser.name,
+          senderId: currentUser.uid,
+          senderName: currentUser.displayName || 'no name',
           createdAt:
             firestore.FieldValue.serverTimestamp(),
         });
@@ -144,7 +148,7 @@ const Messages = () => {
         renderItem={({item}) => (
           <MessagesItem
             item={item}
-            currentUserId={currentUser.id}
+            currentUserId={currentUser.uid}
           />
         )}
 
