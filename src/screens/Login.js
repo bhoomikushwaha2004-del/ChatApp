@@ -13,7 +13,7 @@ import {
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import SocialButton from '../components/SocialButton';
-import {AuthContext} from '../navigation/AuthProvider';
+import {AuthContext} from '../services/AuthProvider';
 import { useNavigation } from '@react-navigation/native';
 
 const Login = () => {

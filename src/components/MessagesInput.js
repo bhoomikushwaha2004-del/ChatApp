@@ -1,10 +1,8 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const MessagesInput = () => {
-    
-
-  
+const MessagesInput = ({message,setMessage,sendMessage}) => {
   return (
     <View style={styles.inputContainer}>
 

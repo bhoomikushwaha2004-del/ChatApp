@@ -7,7 +7,7 @@ import {
   Image,
 } from 'react-native';
 
-import {AuthContext} from '../navigation/AuthProvider';
+import {AuthContext} from '../services/AuthProvider';
 
 const Profile = () => {
 

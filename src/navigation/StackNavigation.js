@@ -4,7 +4,7 @@ import OnBoardingScreens from '../screens/OnBoardingScreens';
 import Login from '../screens/Login';
 import Signup from '../screens/Signup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AuthContext } from './AuthProvider';
+import { AuthContext } from '../services/AuthProvider';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import BottomTabs from './BottomTabs';
 import Messages from '../screens/Messages';

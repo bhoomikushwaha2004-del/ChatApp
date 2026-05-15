@@ -2,6 +2,7 @@ import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import React, { createContext, useState, useEffect } from 'react';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
+import firestore from '@react-native-firebase/firestore'
 
 export const AuthContext = createContext();
 
@@ -22,7 +23,20 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      await auth().signInWithEmailAndPassword(email, password);
+      const userCredential = await auth().signInWithEmailAndPassword(email, password);
+
+      const user = userCredential.user;
+
+      await firestore()
+        .collection('users')
+        .doc(user.uid)
+        .set({
+          uid:user.uid,
+          name:user.displayName || 'no name',
+          email:user.email,
+          image:user.user.photoURL,
+        })
+
     } catch (e) {
       alert(e.message);
     }
@@ -31,6 +45,17 @@ export const AuthProvider = ({ children }) => {
   const register = async (email, password) => {
     try {
       await auth().createUserWithEmailAndPassword(email, password);
+
+      await firestore()
+        .collection('users')
+        .doc(user.uid)
+        .set({
+          uid:user.uid,
+          name:user.displayName,
+          email:user.email,
+          image:user.user.photoURL,
+        })
+
     } catch (e) {
       alert(e.message);
     }
