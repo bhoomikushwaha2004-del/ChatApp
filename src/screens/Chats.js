@@ -8,124 +8,131 @@ import {
   TouchableOpacity,
   Image,
   StatusBar,
+  TextInput,
 } from 'react-native';
+import ChatList from '../components/ChatList'
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import ChatHeader from '../components/ChatHeader'
+import ChatSearchTab from '../components/ChatSearchTab'
 
 const users = [
   {
     id: '1',
-    name: 'Rahul',
-    lastMessage: 'Hello bro 👋',
+    name: 'Rahul Sharma',
+    lastMessage: 'Bro project complete ho gaya 🔥',
     time: '2:30 PM',
-    image:
-      'https://i.pravatar.cc/150?img=1',
+    unread: 2,
+    online: true,
+    image: 'https://i.pravatar.cc/150?img=11',
   },
 
   {
     id: '2',
     name: 'Priya',
-    lastMessage: 'Kya kar rhe ho?',
-    time: '1:15 PM',
-    image:
-      'https://i.pravatar.cc/150?img=2',
+    lastMessage: 'Kal milte h 😊',
+    time: '1:10 PM',
+    unread: 0,
+    online: false,
+    image: 'https://i.pravatar.cc/150?img=32',
   },
 
   {
     id: '3',
     name: 'Aman',
-    lastMessage: 'Kal milte h',
+    lastMessage: 'Voice message 🎤',
     time: 'Yesterday',
-    image:
-      'https://i.pravatar.cc/150?img=3',
+    unread: 4,
+    online: true,
+    image: 'https://i.pravatar.cc/150?img=14',
+  },
+
+  {
+    id: '4',
+    name: 'Sneha',
+    lastMessage: 'Photo received 📸',
+    time: 'Yesterday',
+    unread: 0,
+    online: false,
+    image: 'https://i.pravatar.cc/150?img=45',
+  },
+
+  {
+    id: '5',
+    name: 'Karan',
+    lastMessage: 'Typing...',
+    time: 'Monday',
+    unread: 1,
+    online: true,
+    image: 'https://i.pravatar.cc/150?img=19',
   },
 ];
 
 const Chats = () => {
-    const navigation = useNavigation()
-  const renderItem = ({item}) => {
-    return (
-      <TouchableOpacity
-        style={styles.chatContainer}
-        onPress={() =>
-          navigation.navigate('ChatRoom', {
-            userName: item.name,
-          })
-        }
-      >
-        <Image
-          source={{uri: item.image}}
-          style={styles.image}
+  return (
+    <>
+      <StatusBar barStyle={'dark-content'} backgroundColor="#fff" />
+
+      <View style={styles.container}>
+
+        {/* Header */}
+        <ChatHeader />
+
+        {/* Search */}
+        <ChatSearchTab />
+
+        {/* Chat List */}
+
+        <FlatList
+          data={users}
+          keyExtractor={item => item.id}
+          renderItem={ChatList}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingBottom: 100,
+          }}
         />
 
-        <View style={styles.info}>
-          <Text style={styles.name}>
-            {item.name}
-          </Text>
+        {/* Floating Button */}
 
-          <Text style={styles.message}>
-            {item.lastMessage}
-          </Text>
-        </View>
+        <TouchableOpacity style={styles.fab}>
+          <Ionicons
+            name="chatbubble-ellipses"
+            size={26}
+            color="#fff"
+          />
+        </TouchableOpacity>
 
-        <Text style={styles.time}>
-          {item.time}
-        </Text>
-      </TouchableOpacity>
-    );
-  };
-
-  return (
-    <View style={styles.container}>
-        <StatusBar barStyle={'dark-content'} />
-      <FlatList
-        data={users}
-        keyExtractor={item => item.id}
-        renderItem={renderItem}
-      />
-    </View>
+      </View>
+    </>
   );
 };
 
 export default Chats;
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingTop: 10,
+    backgroundColor: '#f8f9fd',
+    paddingHorizontal: 16,
+    paddingTop: 40,
   },
+  
 
-  chatContainer: {
-    flexDirection: 'row',
+  fab: {
+    position: 'absolute',
+    bottom: 25,
+    right: 20,
+
+    width: 62,
+    height: 62,
+    borderRadius: 31,
+
+    backgroundColor: '#2e64e5',
+
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 15,
-    borderBottomWidth: 1,
-    borderColor: '#eee',
-  },
 
-  image: {
-    width: 55,
-    height: 55,
-    borderRadius: 30,
-  },
-
-  info: {
-    flex: 1,
-    marginLeft: 15,
-  },
-
-  name: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#000',
-  },
-
-  message: {
-    marginTop: 5,
-    color: 'gray',
-  },
-
-  time: {
-    color: 'gray',
-    fontSize: 12,
+    elevation: 6,
   },
 });

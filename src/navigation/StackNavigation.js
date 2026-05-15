@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from './AuthProvider';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import BottomTabs from './BottomTabs'
+import Messages from '../screens/Messages'
 
 const Stack = createNativeStackNavigator();
 
@@ -62,6 +63,11 @@ const StackNavigation = () => {
           <Stack.Screen
             name="signup"
             component={Signup}
+          />
+
+          <Stack.Screen
+            name="messages"
+            component={Messages}
           />
         </>
       )}
