@@ -15,9 +15,6 @@ import {useNavigation} from '@react-navigation/native';
 
 const Chats = () => {
 
-  // Initially empty chats
-  const [chatUsers, setChatUsers] = useState([]);
-
   const navigation = useNavigation();
 
   return (
@@ -30,10 +27,14 @@ const Chats = () => {
 
         <ChatSearchTab />
 
-        {/* If no chats */}
-
-        {chatUsers.length === 0 ? (
-          <View style={styles.emptyContainer}>
+          <FlatList
+            keyExtractor={item => item.uid}
+            renderItem={({item}) => (
+              <ChatList item={item} />
+            )}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={(
+              <View style={styles.emptyContainer}>
             <Ionicons
               name="chatbubble-outline"
               size={80}
@@ -48,24 +49,15 @@ const Chats = () => {
               Start messaging to see chats here
             </Text>
           </View>
-        ) : (
-
-          <FlatList
-            data={chatUsers}
-            keyExtractor={item => item.uid}
-            renderItem={({item}) => (
-              <ChatList item={item} />
             )}
-            showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               paddingBottom: 100,
             }}
           />
-        )}
 
         {/* Floating Button */}
 
-        <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('contacts', {setChatUsers})}>
+        <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('contacts')}>
           <Ionicons
             name="chatbubble-ellipses"
             size={26}

@@ -1,5 +1,3 @@
-// LOGIN.JS
-
 import React, {
   useContext,
   useState,

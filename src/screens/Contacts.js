@@ -1,4 +1,7 @@
-import React from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 import {
   FlatList,
   TouchableOpacity,
@@ -8,36 +11,51 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
+  Platform,
 } from 'react-native';
-import ContactHeader from '../components/ContactHeader'
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {contacts} from '../services/contacts';
+import ContactHeader from '../components/ContactHeader';
+import { useNavigation } from '@react-navigation/native';
 
-const Contacts = ({navigation, route}) => {
+const Contacts = () => {
+  const navigation = useNavigation()
+  const [users, setUsers] = useState([]);
 
-  const {setChatUsers} = route.params;
+  const currentUser = auth().currentUser;
+
+  // FETCH USERS
+
+  useEffect(() => {
+
+    const unsubscribe = firestore()
+      .collection('users')
+      .onSnapshot(snapshot => {
+
+        const allUsers = snapshot.docs.map(doc => ({
+          uid: doc.id,
+          ...doc.data(),
+        }));
+
+        // REMOVE CURRENT USER
+
+        const filteredUsers =
+          allUsers.filter(
+            item =>
+              item.uid !== currentUser.uid,
+          );
+
+        setUsers(filteredUsers);
+      });
+
+    return unsubscribe;
+
+  }, []);
+
+  // START CHAT
 
   const startConversation = user => {
-
-    const newChat = {
-      ...user,
-      lastMessage: '',
-      time: 'Now',
-      unread: 0,
-    };
-
-    setChatUsers(prev => {
-
-      const alreadyExists = prev.find(
-        item => item.uid === user.uid,
-      );
-
-      if (alreadyExists) {
-        return prev;
-      }
-
-      return [newChat, ...prev];
-    });
 
     navigation.navigate('messages', {
       userName: user.name,
@@ -54,19 +72,16 @@ const Contacts = ({navigation, route}) => {
         barStyle="dark-content"
       />
 
-      {/* Header */}
-
-      <ContactHeader contacts={contacts} />
-
-      {/* Contacts List */}
+      <ContactHeader contacts={users} />
 
       <FlatList
-        data={contacts}
+        data={users}
         keyExtractor={item => item.uid}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: 20,
         }}
+
         renderItem={({item}) => (
 
           <TouchableOpacity
@@ -76,22 +91,22 @@ const Contacts = ({navigation, route}) => {
               startConversation(item)
             }>
 
-            {/* Image */}
+            {/* IMAGE */}
 
             <View>
 
               <Image
-                source={{uri: item.image}}
+                source={{
+                  uri:
+                    item.image ||
+                    'https://i.pravatar.cc/150',
+                }}
                 style={styles.image}
               />
 
-              {item.online && (
-                <View style={styles.onlineDot} />
-              )}
-
             </View>
 
-            {/* User Info */}
+            {/* USER INFO */}
 
             <View style={styles.infoContainer}>
 
@@ -100,14 +115,12 @@ const Contacts = ({navigation, route}) => {
               </Text>
 
               <Text style={styles.status}>
-                {item.online
-                  ? 'Online'
-                  : 'Offline'}
+                {item.email}
               </Text>
 
             </View>
 
-            {/* Chat Icon */}
+            {/* CHAT BUTTON */}
 
             <View style={styles.chatBtn}>
 
@@ -134,12 +147,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fd',
-    paddingTop: Platform.OS === 'android'
-      ? StatusBar.currentHeight
-      : 0,
-  },
 
-  
+    paddingTop:
+      Platform.OS === 'android'
+        ? StatusBar.currentHeight
+        : 0,
+  },
 
   card: {
     flexDirection: 'row',
@@ -161,21 +174,6 @@ const styles = StyleSheet.create({
     width: 65,
     height: 65,
     borderRadius: 35,
-  },
-
-  onlineDot: {
-    width: 15,
-    height: 15,
-    borderRadius: 8,
-
-    backgroundColor: '#00c851',
-
-    position: 'absolute',
-    bottom: 3,
-    right: 3,
-
-    borderWidth: 2,
-    borderColor: '#fff',
   },
 
   infoContainer: {
