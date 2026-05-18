@@ -17,13 +17,9 @@ import { useNavigation } from '@react-navigation/native';
 const Signup = () => {
 
   const [name, setName] = useState('');
-
   const [email, setEmail] = useState('');
-
   const [password, setPassword] = useState('');
-
-  const [confirmPassword, setConfirmPassword] =
-    useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const navigation = useNavigation();
 
@@ -246,8 +242,6 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    fontFamily:
-      'Kufam-SemiBoldItalic',
     fontSize: 28,
     marginBottom: 20,
     color: '#051d5f',
@@ -261,7 +255,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: '#2e64e5',
-    fontFamily: 'Lato-Regular',
   },
 
   textPrivate: {
@@ -274,7 +267,6 @@ const styles = StyleSheet.create({
   color_textPrivate: {
     fontSize: 13,
     fontWeight: '400',
-    fontFamily: 'Lato-Regular',
     color: 'grey',
   },
 });

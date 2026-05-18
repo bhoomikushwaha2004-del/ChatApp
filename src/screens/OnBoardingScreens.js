@@ -71,4 +71,3 @@ const OnBoardingScreens = () => {
 
 export default OnBoardingScreens;
 
-const styles = StyleSheet.create({});
