@@ -5,8 +5,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import MessagesHeader from '../components/MessagesHeader';
@@ -26,7 +27,7 @@ const Messages = () => {
   const otherUser = route.params?.otherUser;
 
   if (!otherUser) {
-    return null;
+    return null
   }
 
   const roomId =
@@ -137,9 +138,6 @@ const Messages = () => {
       .get();
 
     if (!newMessages.empty) {
-      // if(!newMessages) {
-      //     return;
-      //   }
       const olderMessages = newMessages.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),

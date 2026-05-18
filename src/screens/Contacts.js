@@ -25,7 +25,6 @@ const Contacts = () => {
 
   const currentUser = auth().currentUser;
 
-  // FETCH USERS
 
   useEffect(() => {
 
@@ -38,7 +37,7 @@ const Contacts = () => {
           ...doc.data(),
         }));
 
-        // REMOVE CURRENT USER
+  
 
         const filteredUsers =
           allUsers.filter(
@@ -53,7 +52,7 @@ const Contacts = () => {
 
   }, []);
 
-  // START CHAT
+
 
   const startConversation = user => {
 
@@ -91,7 +90,7 @@ const Contacts = () => {
               startConversation(item)
             }>
 
-            {/* IMAGE */}
+            {/* Img */}
 
             <View>
 
@@ -106,7 +105,7 @@ const Contacts = () => {
 
             </View>
 
-            {/* USER INFO */}
+            {/* User data*/}
 
             <View style={styles.infoContainer}>
 
@@ -120,7 +119,7 @@ const Contacts = () => {
 
             </View>
 
-            {/* CHAT BUTTON */}
+            {/* Chat btn */}
 
             <View style={styles.chatBtn}>
 

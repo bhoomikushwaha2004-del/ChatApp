@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-
 import {AuthContext} from '../services/AuthProvider';
 
 const Profile = () => {

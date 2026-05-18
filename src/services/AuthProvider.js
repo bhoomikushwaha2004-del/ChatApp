@@ -1,7 +1,5 @@
 import auth from '@react-native-firebase/auth';
-
 import firestore from '@react-native-firebase/firestore';
-
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import React, {
@@ -106,13 +104,10 @@ export const AuthProvider = ({
       const user =
         userCredential.user;
 
-      // SAVE NAME
-
       await user.updateProfile({
         displayName: name,
       });
 
-      // SAVE FIRESTORE
 
       await firestore()
         .collection('users')
@@ -133,7 +128,7 @@ export const AuthProvider = ({
     }
   };
 
-  // LOGOUT
+
 
   const logout = async () => {
 
@@ -146,7 +141,7 @@ export const AuthProvider = ({
     }
   };
 
-  // GOOGLE LOGIN
+  // GOOGLE 
 
   const googleLogin = async () => {
 
@@ -170,9 +165,7 @@ export const AuthProvider = ({
       }
 
       const googleCredential =
-        auth.GoogleAuthProvider.credential(
-          idToken,
-        );
+        auth.GoogleAuthProvider.credential(idToken);
 
       const userCredential =
         await auth()

@@ -2,7 +2,6 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-
 import {
   View,
   StyleSheet,
@@ -11,19 +10,12 @@ import {
   StatusBar,
   Text,
 } from 'react-native';
-
 import firestore from '@react-native-firebase/firestore';
-
 import auth from '@react-native-firebase/auth';
-
 import ChatList from '../components/ChatList';
-
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 import ChatHeader from '../components/ChatHeader';
-
 import ChatSearchTab from '../components/ChatSearchTab';
-
 import {useNavigation} from '@react-navigation/native';
 
 const Chats = () => {

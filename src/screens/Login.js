@@ -12,15 +12,10 @@ import {
   StatusBar,
   Alert,
 } from 'react-native';
-
 import FormInput from '../components/FormInput';
-
 import FormButton from '../components/FormButton';
-
 import SocialButton from '../components/SocialButton';
-
 import { AuthContext } from '../services/AuthProvider';
-
 import { useNavigation } from '@react-navigation/native';
 
 const Login = () => {
