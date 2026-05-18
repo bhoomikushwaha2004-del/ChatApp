@@ -76,6 +76,41 @@ const Messages = () => {
           createdAt: firestore.FieldValue.serverTimestamp(),
         });
 
+      await firestore()
+      .collection('chats')
+      .doc(roomId)
+      .set({
+        participants: [
+          currentUser.uid,
+          otherUser.uid,
+        ],
+
+        users: [
+          {
+            uid: currentUser.uid,
+            name:
+              currentUser.displayName ||
+              'No Name',
+
+            image:
+              currentUser.photoURL || '',
+          },
+
+          {
+            uid: otherUser.uid,
+            name: otherUser.name,
+
+            image:
+              otherUser.image || '',
+          },
+        ],
+
+        lastMessage: message,
+
+        updatedAt:
+          firestore.FieldValue.serverTimestamp(),
+      });
+
       setMessage('');
     } catch (error) {
       console.log(error);
