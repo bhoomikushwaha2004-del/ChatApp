@@ -44,6 +44,9 @@ const Messages = () => {
       .orderBy('createdAt', 'desc')
       .limit(15)
       .onSnapshot(snapshot => {
+        if(!snapshot) {
+          return;
+        }
         const allMessages = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
@@ -134,6 +137,9 @@ const Messages = () => {
       .get();
 
     if (!newMessages.empty) {
+      if(!newMessages) {
+          return;
+        }
       const olderMessages = newMessages.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
