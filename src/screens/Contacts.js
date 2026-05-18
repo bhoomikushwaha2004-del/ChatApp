@@ -33,11 +33,6 @@ const Contacts = ({navigation, route}) => {
       );
 
       if (alreadyExists) {
-        navigation.navigate('messages', {
-          userName: user.name,
-          otherUser: user,
-        });
-
         return prev;
       }
 
@@ -46,6 +41,7 @@ const Contacts = ({navigation, route}) => {
 
     navigation.navigate('messages', {
       userName: user.name,
+      otherUser: user,
     });
   };
 

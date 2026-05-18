@@ -119,7 +119,7 @@ const Messages = () => {
 
       <FlatList
         data={messages}
-        keyExtractor={item => item.uid}
+        keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <MessagesItem item={item} currentUserId={currentUser.uid} />
         )}
