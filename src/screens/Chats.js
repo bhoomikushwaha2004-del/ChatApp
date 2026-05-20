@@ -17,6 +17,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ChatHeader from '../components/ChatHeader';
 import ChatSearchTab from '../components/ChatSearchTab';
 import {useNavigation} from '@react-navigation/native';
+import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+
 
 const Chats = () => {
 
@@ -86,7 +88,7 @@ const Chats = () => {
     <>
       <StatusBar
         barStyle={'dark-content'}
-        backgroundColor="#fff"
+        backgroundColor={COLORS.secondary} //fff
       />
 
       <View style={styles.container}>
@@ -114,8 +116,8 @@ const Chats = () => {
 
               <Ionicons
                 name="chatbubble-outline"
-                size={80}
-                color="#ccc"
+                size={SIZES.xl} //80
+                color={COLORS.greyest} //ccc
               />
 
               <Text
@@ -136,7 +138,7 @@ const Chats = () => {
           )}
 
           contentContainerStyle={{
-            paddingBottom: 100,
+            paddingBottom: SIZES.xxl, //100
           }}
         />
 
@@ -153,8 +155,8 @@ const Chats = () => {
 
           <Ionicons
             name="chatbubble-ellipses"
-            size={26}
-            color="#fff"
+            size={SIZES.xm} //26
+            color={COLORS.secondary} //fff
           />
 
         </TouchableOpacity>
@@ -169,50 +171,50 @@ export default Chats;
 const styles = StyleSheet.create({
 
   container: {
-    flex: 1,
-    backgroundColor: '#f8f9fd',
+    flex: SIZES.xtraXtraXtraS, //1
+    backgroundColor: COLORS.white4, //f8f9fd
 
-    paddingHorizontal: 16,
-    paddingTop: 40,
+    paddingHorizontal: SIZES.s, //16
+    paddingTop: SIZES.medium, //40
   },
 
   fab: {
     position: 'absolute',
-    bottom: 25,
-    right: 20,
+    bottom: SIZES.xxxxs, //25
+    right: SIZES.xxs, //20
 
-    width: 62,
-    height: 62,
-    borderRadius: 31,
+    width: SIZES.large, //62
+    height: SIZES.large, //62
+    borderRadius: BORDER_RADIUS.xl, //31
 
-    backgroundColor: '#2e64e5',
+    backgroundColor: COLORS.blue, 
 
     justifyContent: 'center',
     alignItems: 'center',
 
-    elevation: 6,
+    elevation: ELEVATION.large, //6
   },
 
   emptyContainer: {
-    flex: 1,
+    flex: SIZES.xtraXtraXtraS, //1
     justifyContent: 'center',
     alignItems: 'center',
   },
 
   emptyText: {
-    fontSize: 22,
+    fontSize: FONT_SIZE.l, //22
     fontWeight: '700',
 
-    marginTop: 20,
+    marginTop: SIZES.xxs, //20
 
-    color: '#000',
+    color: COLORS.primary, //000
   },
 
   subText: {
-    marginTop: 8,
+    marginTop: SIZES.xtraExtras, //8
 
     color: 'gray',
 
-    fontSize: 15,
+    fontSize: FONT_SIZE.xs, //15
   },
 });

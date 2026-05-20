@@ -9,6 +9,8 @@ import {
 import React from 'react';
 import Onboarding from 'react-native-onboarding-swiper';
 import { useNavigation } from '@react-navigation/native';
+import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+
 
 const OnBoardingScreens = () => {
   const navigation = useNavigation();

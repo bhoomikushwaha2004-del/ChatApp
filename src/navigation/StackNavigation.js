@@ -9,6 +9,8 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import BottomTabs from './BottomTabs';
 import Messages from '../screens/Messages';
 import Contacts from '../screens/Contacts';
+import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+
 
 const Stack = createNativeStackNavigator();
 

@@ -17,6 +17,9 @@ import FormButton from '../components/FormButton';
 import SocialButton from '../components/SocialButton';
 import { AuthContext } from '../services/AuthProvider';
 import { useNavigation } from '@react-navigation/native';
+import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+
+
 
 const Login = () => {
 
@@ -123,8 +126,8 @@ const Login = () => {
       <SocialButton
         buttonTitle="Sign In with Facebook"
         btnType="facebook"
-        color="#4867aa"
-        backgroundColor="#e6eaf4"
+        color={COLORS.blue2}//"#4867aa"
+        backgroundColor={COLORS.white5}//"#e6eaf4"
         onPress={() => fbLogin()}
       />
 
@@ -133,7 +136,7 @@ const Login = () => {
       <SocialButton
         buttonTitle="Sign In with Google"
         btnType="google"
-        color="#de4d41"
+        color= {COLORS.red}//"#de4d41"
         backgroundColor="#f5e7ea"
         onPress={() =>
           googleLogin()
@@ -168,29 +171,29 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    paddingTop: 50,
+    padding: SIZES.xxs, //20
+    paddingTop: SIZES.m, //50
   },
 
   logo: {
-    height: 150,
-    width: 150,
+    height: SIZES.l ,//150,
+    width: SIZES.l, //150
     resizeMode: 'cover',
   },
 
   text: {
-    fontSize: 28,
-    marginBottom: 10,
-    color: '#051d5f',
+    fontSize: FONT_SIZE.xl, //28
+    marginBottom: SIZES.extraSmall, //10
+    color: COLORS.darkBlue, //051d5f 
   },
 
   forgotButton: {
-    marginVertical: 35,
+    marginVertical: SIZES.extraMedium, //35
   },
 
   navButtonText: {
-    fontSize: 18,
+    fontSize: FONT_SIZE.m, //18
     fontWeight: '500',
-    color: '#2e64e5',
+    color: COLORS.blue, 
   },
 });

@@ -1,6 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
+import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
 
 const ChatList = ({item}) => {
   const navigation = useNavigation()
@@ -70,80 +71,80 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
 
-    backgroundColor: '#fff',
-    padding: 14,
-    borderRadius: 22,
+    backgroundColor: COLORS.secondary, //fff
+    padding: SIZES.smaller, //14
+    borderRadius: BORDER_RADIUS.xxm, //22
 
-    marginBottom: 14,
+    marginBottom: SIZES.smaller, //14
 
-    elevation: 2,
+    elevation: ELEVATION.small, //2
   },
 
   leftSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1,
+    flex: SIZES.xtraXtraXtraS, //1
   },
 
   image: {
-    width: 62,
-    height: 62,
-    borderRadius: 31,
+    width: SIZES.large, //62
+    height: SIZES.large, //62
+    borderRadius: BORDER_RADIUS.xl, //31
   },
 
   onlineDot: {
-    width: 15,
-    height: 15,
-    borderRadius: 8,
-    backgroundColor: '#00c851',
+    width: SIZES.smallest, //15
+    height: SIZES.smallest, //15
+    borderRadius: BORDER_RADIUS.xs, //8
+    backgroundColor: COLORS.limeGreen, //00c851
     position: 'absolute',
-    bottom: 3,
-    right: 3,
-    borderWidth: 2,
-    borderColor: '#fff',
+    bottom: SIZES.xtraS, //3
+    right: SIZES.xtraS, //3
+    borderWidth: SIZES.xtraXtraS, //2
+    borderColor: COLORS.secondary, //fff
   },
 
   textContainer: {
-    marginLeft: 14,
-    flex: 1,
+    marginLeft: SIZES.smaller, //14
+    flex: SIZES.xtraXtraXtraS, //1
   },
 
   name: {
-    fontSize: 17,
+    fontSize: FONT_SIZE.xxxs, //17
     fontWeight: '700',
-    color: '#000',
+    color: COLORS.primary, //000
   },
 
   message: {
-    marginTop: 6,
+    marginTop: SIZES.extraExtraSmall, //6
     color: 'gray',
-    fontSize: 14,
+    fontSize: FONT_SIZE.s, //14
   },
 
   rightSection: {
     alignItems: 'flex-end',
     justifyContent: 'space-between',
-    height: 55,
+    height: SIZES.extraExtraLarge, //55
   },
 
   time: {
     color: 'gray',
-    fontSize: 12,
+    fontSize: FONT_SIZExtraSmall, //12
   },
 
   unreadBadge: {
-    backgroundColor: '#2e64e5',
-    minWidth: 24,
-    height: 24,
-    borderRadius: 12,
+    backgroundColor: COLORS.blue, //2e64e5
+    minWidth: SIZES.xxxs, //24
+    height: SIZES.xxxs, //24
+    borderRadius: BORDER_RADIUS.xxxs, //12
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 6,
+    paddingHorizontal: SIZES.extraExtraSmall, //6
   },
 
   unreadText: {
-    color: '#fff',
+    color: COLORS.secondary, //fff
     fontWeight: '700',
-    fontSize: 12,
+    fontSize: FONT_SIZE.xtraSmall, //12
   },
 })

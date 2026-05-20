@@ -13,6 +13,7 @@ import FormButton from '../components/FormButton';
 import SocialButton from '../components/SocialButton';
 import { AuthContext } from '../services/AuthProvider';
 import { useNavigation } from '@react-navigation/native';
+import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
 
 const Signup = () => {
 

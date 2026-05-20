@@ -18,6 +18,8 @@ import auth from '@react-native-firebase/auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ContactHeader from '../components/ContactHeader';
 import { useNavigation } from '@react-navigation/native';
+import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+
 
 const Contacts = () => {
   const navigation = useNavigation()

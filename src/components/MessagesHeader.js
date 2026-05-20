@@ -2,6 +2,7 @@ import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-nativ
 import React from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
 
 const MessagesHeader = () => {
     const navigation = useNavigation()
@@ -17,8 +18,8 @@ const MessagesHeader = () => {
 
           <Ionicons
             name="arrow-back"
-            size={28}
-            color="#000"
+            size={SIZES.extraExtraExtraMedium} //28
+            color={COLORS.primary} //000
           />
 
         </TouchableOpacity>
@@ -27,7 +28,7 @@ const MessagesHeader = () => {
           {userName}
         </Text>
 
-        <View style={{width: 28}} />
+        {/* <View style={{width: 28}} /> */}
 
       </View>
 
@@ -43,18 +44,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
 
-    paddingHorizontal: 15,
-    paddingVertical: 15,
+    paddingHorizontal: SIZES.smallest, //15
+    paddingVertical: SIZES.smallest, //15
 
-    borderBottomWidth: 1,
-    borderColor: '#eee',
+    borderBottomWidth: SIZES.xtraXtraXtraS, //1
+    borderColor: COLORS.secondWhite, //eee
 
-    paddingTop: 50,
+    paddingTop: SIZES.m, //50
   },
 
   headerTitle: {
-    fontSize: 20,
+    fontSize: FONT_SIZE.xm, //20
     fontWeight: '700',
-    color: '#000',
+    color: COLORS.primary, //000
   },
 })

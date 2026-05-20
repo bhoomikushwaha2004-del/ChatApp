@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
 
 const ContactHeader = ({contacts}) => {
     const navigation = useNavigation()
@@ -14,8 +15,8 @@ const ContactHeader = ({contacts}) => {
 
           <Ionicons
             name="arrow-back"
-            size={24}
-            color="#000"
+            size={SIZES.xxxs} //24
+            color={COLORS.primary} //000
           />
 
         </TouchableOpacity>
@@ -43,33 +44,33 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
 
-    paddingHorizontal: 18,
-    paddingVertical: 16,
+    paddingHorizontal: SIZES.xs, //18
+    paddingVertical: SIZES.s, //16
   },
 
   backBtn: {
-    width: 45,
-    height: 45,
-    borderRadius: 22,
+    width: SIZES.mediumest, //45
+    height: SIZES.mediumest, //45
+    borderRadius: BORDER_RADIUS.xxm, //22
 
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.secondary, //fff
 
     justifyContent: 'center',
     alignItems: 'center',
 
-    marginRight: 14,
+    marginRight: SIZES.smaller, //14
 
-    elevation: 3,
+    elevation: ELEVATION.medium, //3
   },
 
   headerTitle: {
-    fontSize: 22,
+    fontSize: FONT_SIZE.l, //22
     fontWeight: '700',
-    color: '#000',
+    color: COLORS.primary, //000
   },
 
   headerSubTitle: {
     color: 'gray',
-    marginTop: 2,
+    marginTop: SIZES.xtraXtraS, //2
   },
 })

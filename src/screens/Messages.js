@@ -14,6 +14,8 @@ import MessagesHeader from '../components/MessagesHeader';
 import MessagesItem from '../components/MessagesItem';
 import MessagesInput from '../components/MessagesInput';
 import { useRoute } from '@react-navigation/native';
+import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+
 
 const Messages = () => {
   const [message, setMessage] = useState('');
@@ -166,7 +168,7 @@ const Messages = () => {
         onEndReached={loadMoreMessages}
         onEndReachedThreshold={0.3}
         contentContainerStyle={{
-          padding: 15,
+          padding: SIZES.smallest, //15
         }}
       />
 
@@ -183,7 +185,7 @@ export default Messages;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
+    flex: SIZES.xtraXtraXtraS, //1
+    backgroundColor: COLORS.secondary, //fff
   },
 });

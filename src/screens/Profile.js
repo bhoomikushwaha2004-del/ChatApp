@@ -7,6 +7,7 @@ import {
   Image,
 } from 'react-native';
 import {AuthContext} from '../services/AuthProvider';
+import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
 
 const Profile = () => {
 
@@ -44,35 +45,35 @@ export default Profile;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: SIZES.xtraXtraXtraS, //1
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.secondary, //fff
   },
 
   image: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    marginBottom: 20,
+    width: SIZES.largest, //120
+    height: SIZES.largest, //120
+    borderRadius: BORDER_RADIUS.xxxl, //60
+    marginBottom: SIZES.xxs, //20
   },
 
   name: {
-    fontSize: 18,
+    fontSize: FONT_SIZE.m, //18
     fontWeight: '700',
-    marginBottom: 30,
+    marginBottom: SIZES.extraExtraMedium, //30
   },
 
   button: {
-    backgroundColor: '#2e64e5',
-    paddingHorizontal: 30,
-    paddingVertical: 14,
-    borderRadius: 10,
+    backgroundColor: COLORS.blue, 
+    paddingHorizontal: SIZES.extraExtraMedium, //30
+    paddingVertical: SIZES.smaller, //14
+    borderRadius: BORDER_RADIUS.xxs, //10
   },
 
   btnText: {
-    color: '#fff',
-    fontSize: 16,
+    color: COLORS.secondary, //fff
+    fontSize: FONT_SIZE.xxs, //16
     fontWeight: '600',
   },
 });

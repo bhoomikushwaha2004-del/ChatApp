@@ -3,7 +3,7 @@ import {
   Text,
   View,
 } from 'react-native';
-
+import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
 import React from 'react';
 
 const MessagesItem = ({
@@ -24,8 +24,8 @@ const MessagesItem = ({
             : 'flex-start',
 
           backgroundColor: isMe
-            ? '#2e64e5'
-            : '#e5e5ea',
+            ? COLORS.blue //2e64e5
+            : COLORS.white7, //e5e5ea
         },
       ]}>
 
@@ -38,9 +38,9 @@ const MessagesItem = ({
       <Text
         style={{
           color: isMe
-            ? '#fff'
-            : '#000',
-          fontSize: 15,
+            ? COLORS.secondary //fff
+            : COLORS.primary, //000
+          fontSize: FONT_SIZE.xs, //15
         }}>
 
         {item.text}
@@ -52,8 +52,8 @@ const MessagesItem = ({
           styles.time,
           {
             color: isMe
-              ? '#ddd'
-              : '#555',
+              ? COLORS.lightGrey //ddd
+              : COLORS.darkGrey, //555
           },
         ]}>
 
@@ -77,20 +77,20 @@ export default MessagesItem;
 const styles = StyleSheet.create({
   messageContainer: {
     maxWidth: '75%',
-    padding: 12,
-    borderRadius: 16,
-    marginBottom: 12,
+    padding: SIZES.small, //12
+    borderRadius: SIZES.s, //16
+    marginBottom: SIZES.small, //12
   },
 
   senderName: {
     fontWeight: '700',
-    marginBottom: 5,
-    color: '#000',
+    marginBottom: SIZES.extraExtraExtraSmall, //5
+    color: COLORS.primary, //000
   },
 
   time: {
-    fontSize: 11,
-    marginTop: 6,
+    fontSize: FONT_SIZE.xtraXtraSmall, //11
+    marginTop: SIZES.extraExtraSmall, //6
     alignSelf: 'flex-end',
   },
 });

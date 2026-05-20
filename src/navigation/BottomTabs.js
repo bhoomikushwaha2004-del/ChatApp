@@ -3,6 +3,9 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Chats from '../screens/Chats';
 import Profile from '../screens/Profile';
+import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+
+
 
 const Tab = createBottomTabNavigator();
 
@@ -31,13 +34,13 @@ const BottomTabs = () => {
           );
         },
 
-        tabBarActiveTintColor: '#2e64e5',
+        tabBarActiveTintColor: COLORS.blue,
         tabBarInactiveTintColor: 'gray',
 
         tabBarStyle: {
-          height: 65,
-          paddingBottom: 8,
-          paddingTop: 8,
+          height: SIZES.larger, //65
+          paddingBottom: SIZES.xtraExtras, //8
+          paddingTop: SIZES.xtraExtras, //8
         },
       })}
     >
