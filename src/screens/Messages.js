@@ -61,7 +61,7 @@ const Messages = () => {
       });
 
     return unsubscribe;
-  }, []);
+  }, [roomId]);
 
   // SEND MESSAGE
 
@@ -79,7 +79,9 @@ const Messages = () => {
           text: message,
           senderId: currentUser.uid,
           senderName: currentUser.displayName || 'no name',
-          createdAt: firestore.FieldValue.serverTimestamp(),
+          createdAt: 
+          new Date()
+          // firestore.FieldValue.serverTimestamp(),
         });
 
       await firestore()
@@ -114,8 +116,11 @@ const Messages = () => {
         lastMessage: message,
 
         updatedAt:
-          firestore.FieldValue.serverTimestamp(),
-      });
+        new Date()
+          // firestore.FieldValue.serverTimestamp(),
+      },
+      { merge: true}
+    );
 
       setMessage('');
     } catch (error) {

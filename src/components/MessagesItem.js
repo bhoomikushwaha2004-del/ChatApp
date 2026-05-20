@@ -3,7 +3,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../screens';
 import React from 'react';
 
 const MessagesItem = ({

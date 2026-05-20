@@ -46,9 +46,6 @@ const Chats = () => {
       )
 
       .onSnapshot(snapshot => {
-        if(!snapshot) {
-          return;
-        }
 
         const allChats =
           snapshot.docs.map(doc => {
