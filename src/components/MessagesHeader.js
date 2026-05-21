@@ -28,7 +28,7 @@ const MessagesHeader = () => {
           {userName}
         </Text>
 
-        {/* <View style={{width: 28}} /> */}
+        <View style={{width: 28}} />
 
       </View>
 
@@ -57,5 +57,6 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE.xm, //20
     fontWeight: '700',
     color: COLORS.primary, //000
+    alignSelf:'center'
   },
 })

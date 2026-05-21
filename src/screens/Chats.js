@@ -27,6 +27,68 @@ const Chats = () => {
   const navigation = useNavigation();
 
   const currentUser = auth().currentUser;
+  const [refreshing, setRefreshing] = useState(false);
+
+   const onRefresh = async () => {
+    setRefreshing(true);
+
+    try{
+      const unsubscribe = await firestore()
+      .collection('chats')
+      .where(
+        'participants',
+        'array-contains',
+        currentUser.uid,
+      )
+
+      .orderBy(
+        'updatedAt',
+        'desc',
+      )
+      .get()
+
+      .onSnapshot(snapshot => {
+        if(!snapshot) {
+          return ;
+        }
+
+        const allChats =
+          snapshot.docs.map(doc => {
+
+            const data = doc.data();
+
+            // FIND OTHER USER
+
+            const otherUser =
+              data.users.find(
+                user =>
+                  user.uid !==
+                  currentUser.uid,
+              );
+
+            return {
+              id: doc.id,
+
+              ...otherUser,
+
+              lastMessage:
+                data.lastMessage,
+
+              updatedAt:
+                data.updatedAt,
+            };
+          });
+
+        setChats(allChats);
+      });
+    }
+      catch(err) {
+        console.log(err);
+        
+      }
+
+    setRefreshing(false);
+  };
 
   // REALTIME CHATS
 
@@ -46,6 +108,9 @@ const Chats = () => {
       )
 
       .onSnapshot(snapshot => {
+        if(!snapshot) {
+          return ;
+        }
 
         const allChats =
           snapshot.docs.map(doc => {
@@ -96,7 +161,8 @@ const Chats = () => {
 
         <FlatList
           data={chats}
-
+          refreshing={refreshing}
+          onRefresh={onRefresh}
           keyExtractor={item => item.uid}
 
           renderItem={({item}) => (

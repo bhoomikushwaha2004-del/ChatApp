@@ -1,10 +1,11 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
 
 const ChatList = ({item}) => {
   const navigation = useNavigation()
+   
   return (
       <TouchableOpacity
         activeOpacity={0.8}
@@ -129,7 +130,7 @@ const styles = StyleSheet.create({
 
   time: {
     color: 'gray',
-    fontSize: FONT_SIZExtraSmall, //12
+    fontSize: FONT_SIZE.xtraSmall, //12
   },
 
   unreadBadge: {
