@@ -47,10 +47,10 @@ const Chats = () => {
       )
       .get()
 
-      .onSnapshot(snapshot => {
-        if(!snapshot) {
-          return ;
-        }
+      // .onSnapshot(snapshot => 
+      //   if(!snapshot) {
+      //     return ;
+      //   }
 
         const allChats =
           snapshot.docs.map(doc => {
@@ -80,7 +80,7 @@ const Chats = () => {
           });
 
         setChats(allChats);
-      });
+      
     }
       catch(err) {
         console.log(err);
