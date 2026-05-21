@@ -58,8 +58,9 @@ const MessagesItem = ({
         ]}>
 
         {item.createdAt?.toDate
-          ? item.createdAt
-              .toDate()
+          ?
+            item.createdAt
+            .toDate()
               .toLocaleTimeString([], {
                 hour: '2-digit',
                 minute: '2-digit',
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
   senderName: {
     fontWeight: '700',
     marginBottom: SIZES.extraExtraExtraSmall, //5
-    color: COLORS.primary, //000
+    color: COLORS.red, //000
   },
 
   time: {

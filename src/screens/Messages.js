@@ -14,8 +14,8 @@ import MessagesHeader from '../components/MessagesHeader';
 import MessagesItem from '../components/MessagesItem';
 import MessagesInput from '../components/MessagesInput';
 import { useRoute } from '@react-navigation/native';
-import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
-
+import { SIZES, FONT_SIZE, COLORS, BORDER_RADIUS, ELEVATION } from '../styles';
+import NoChat from 'react-native-vector-icons/Feather'
 
 const Messages = () => {
   const [message, setMessage] = useState('');
@@ -29,7 +29,7 @@ const Messages = () => {
   const otherUser = route.params?.otherUser;
 
   if (!otherUser) {
-    return null
+    return null;
   }
 
   const roomId =
@@ -79,48 +79,40 @@ const Messages = () => {
           text: message,
           senderId: currentUser.uid,
           senderName: currentUser.displayName || 'no name',
-          createdAt: 
-          new Date()
+          createdAt: new Date(),
           // firestore.FieldValue.serverTimestamp(),
         });
 
       await firestore()
-      .collection('chats')
-      .doc(roomId)
-      .set({
-        participants: [
-          currentUser.uid,
-          otherUser.uid,
-        ],
-
-        users: [
+        .collection('chats')
+        .doc(roomId)
+        .set(
           {
-            uid: currentUser.uid,
-            name:
-              currentUser.displayName ||
-              'No Name',
+            participants: [currentUser.uid, otherUser.uid],
 
-            image:
-              currentUser.photoURL || '',
+            users: [
+              {
+                uid: currentUser.uid,
+                name: currentUser.displayName || 'No Name',
+
+                image: currentUser.photoURL || '',
+              },
+
+              {
+                uid: otherUser.uid,
+                name: otherUser.name,
+
+                image: otherUser.image || '',
+              },
+            ],
+
+            lastMessage: message,
+
+            updatedAt: new Date(),
+            // firestore.FieldValue.serverTimestamp(),
           },
-
-          {
-            uid: otherUser.uid,
-            name: otherUser.name,
-
-            image:
-              otherUser.image || '',
-          },
-        ],
-
-        lastMessage: message,
-
-        updatedAt:
-        new Date()
-          // firestore.FieldValue.serverTimestamp(),
-      },
-      { merge: true}
-    );
+          { merge: true },
+        );
 
       setMessage('');
     } catch (error) {
@@ -166,12 +158,65 @@ const Messages = () => {
       <FlatList
         data={messages}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <MessagesItem item={item} currentUserId={currentUser.uid} />
-        )}
+        renderItem={({ item, index }) => {
+          const currentDate = item.createdAt?.toDate
+            ? item.createdAt.toDate().toDateString()
+            : '';
+
+          const previousDate = messages[index + 1]?.createdAt?.toDate
+            ? messages[index + 1].createdAt.toDate().toDateString()
+            : '';
+
+          const showDate = currentDate !== previousDate;
+
+          return (
+            <>
+              {showDate && (
+                <View style={styles.dateContainer}>
+                  <Text style={styles.dateText}>
+                    {item.createdAt?.toDate().toLocaleDateString([], {
+                      day: 'numeric',
+                      month: 'short',
+                    })}
+                  </Text>
+                </View>
+              )}
+
+              <MessagesItem item={item} currentUserId={currentUser.uid} />
+            </>
+          );
+        }}
         inverted
         onEndReached={loadMoreMessages}
         onEndReachedThreshold={0.3}
+        ListEmptyComponent={(
+          <View
+              style={
+                styles.emptyContainer
+              }>
+
+              <NoChat
+                name="message-circle"
+                size={SIZES.xl} //80
+                color={COLORS.greyest} //ccc
+              />
+
+              <Text
+                style={styles.emptyText}>
+
+                No Chats Yet
+
+              </Text>
+
+              <Text
+                style={styles.subText}>
+
+                Start messaging to see chats here
+
+              </Text>
+
+            </View>
+        )}
         contentContainerStyle={{
           padding: SIZES.smallest, //15
         }}
@@ -192,5 +237,43 @@ const styles = StyleSheet.create({
   container: {
     flex: SIZES.xtraXtraXtraS, //1
     backgroundColor: COLORS.secondary, //fff
+  },
+  dateContainer:{
+    alignSelf:'center',
+    backgroundColor:'#EAEAEA',
+    paddingHorizontal:12,
+    paddingVertical:5,
+    borderRadius:10,
+    marginVertical:10,
+  },
+  dateText:{
+    fontSize:12,
+    color:'#555',
+    fontWeight:'600'
+  },
+  emptyContainer: {
+    // flex: SIZES.xtraXtraXtraS, //1
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf:'center',
+    alignContent:'center',
+    
+  },
+
+  emptyText: {
+    fontSize: FONT_SIZE.l, //22
+    fontWeight: '700',
+
+    marginTop: SIZES.xxs, //20
+
+    color: COLORS.primary, //000
+  },
+
+  subText: {
+    marginTop: SIZES.xtraExtras, //8
+
+    color: 'gray',
+
+    fontSize: FONT_SIZE.xs, //15
   },
 });
