@@ -1,12 +1,14 @@
+// import { FieldValue } from '@react-native-firebase/app/dist/module/internal/web/firebaseFirestore';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FieldValue } from '@react-native-firebase/firestore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-
+// import {AppState} from 'react-native'
 import React, {
   createContext,
   useState,
   useEffect,
 } from 'react';
+import { AppState } from 'react-native';
 
 import {
   LoginManager,
@@ -16,40 +18,64 @@ import {
 export const AuthContext =
   createContext();
 
-export const AuthProvider = ({
-  children,
-}) => {
+export const AuthProvider = ({children}) => {
 
-  const [user, setUser] =
-    useState(null);
+  const [user, setUser] = useState(null);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
 
-    const unsubscribe =
-      auth().onAuthStateChanged(
-        user => {
+    if(!user?.uid) {
+      return;
+    }
 
-          setUser(user);
+    const userRef = firestore()
+      .collection('users')
+      .doc(user.uid);
 
-          if (loading) {
-            setLoading(false);
-          }
-        },
-      );
+    userRef.update({
+      isOnline:true,
+      lastSeen: firestore.FieldValue.serverTimestamp()
+    })
 
-    return unsubscribe;
+    const subcription = AppState.addEventListener('change',
+      async nextAppState => {
+        if(nextAppState === 'active') {
+          await userRef.update({ isOnline:true })
+        } else {
+          await userRef.update({ isOnline:false, lastSeen : firestore.FieldValue.serverTimestamp()})
+        }
+      }
+    ) 
 
-  }, []);
+    return () => {
+      userRef.update({ 
+        isOnline:false, lastSeen : firestore.FieldValue.serverTimestamp()
+      })
+
+      subcription.remove()
+    }
+
+    // const unsubscribe =
+    //   auth().onAuthStateChanged(
+    //     user => {
+
+    //       setUser(user);
+
+    //       if (loading) {
+    //         setLoading(false);
+    //       }
+    //     },
+    //   );
+
+    // return unsubscribe;
+
+  }, [user]);
 
   // LOGIN
 
-  const login = async (
-    email,
-    password,
-  ) => {
+  const login = async (email,password) => {
 
     try {
 
@@ -69,14 +95,13 @@ export const AuthProvider = ({
         .set({
           uid: user.uid,
 
-          name:
-            user.displayName ||
-            'No Name',
+          name:user.displayName ||'No Name',
 
           email: user.email,
 
-          image:
-            user.photoURL || '',
+          image:user.photoURL || '',
+          isOnline : true,
+          lastSeen:FieldValue.serverTimestamp()
         });
 
     } catch (e) {
@@ -86,27 +111,17 @@ export const AuthProvider = ({
 
   // REGISTER
 
-  const register = async (
-    name,
-    email,
-    password,
-  ) => {
+  const register = async (name,email,password) => {
 
     try {
 
       const userCredential =
         await auth()
-          .createUserWithEmailAndPassword(
-            email,
-            password,
-          );
+          .createUserWithEmailAndPassword(email,password);
 
-      const user =
-        userCredential.user;
+      const user = userCredential.user;
 
-      await user.updateProfile({
-        displayName: name,
-      });
+      await user.updateProfile({displayName: name});
 
 
       await firestore()
@@ -121,6 +136,8 @@ export const AuthProvider = ({
 
           image:
             user.photoURL || '',
+          isOnline : true,
+          lastSeen:FieldValue.serverTimestamp()
         });
 
     } catch (e) {
@@ -190,6 +207,8 @@ export const AuthProvider = ({
 
           image:
             user.photoURL || '',
+          isOnline : true,
+          lastSeen:FieldValue.serverTimestamp()
         });
 
     } catch (err) {
@@ -255,6 +274,8 @@ export const AuthProvider = ({
 
           image:
             user.photoURL || '',
+          isOnline : true,
+          lastSeen:FieldValue.serverTimestamp()
         });
 
     } catch (err) {

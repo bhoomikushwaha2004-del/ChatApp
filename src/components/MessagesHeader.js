@@ -1,13 +1,50 @@
 import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+import firestore from '@react-native-firebase/firestore'
+
 
 const MessagesHeader = () => {
     const navigation = useNavigation()
     const route = useRoute()
   const {userName} = route.params;
+  const {otherUser} = route.params;
+
+  const [userStatus, setUserStatus] = useState('')
+
+  useEffect(()=> {
+
+    const unsubscribe = firestore()
+      .collection('users')
+      .doc(otherUser.uid)
+      .onSnapshot(snapshot => {
+        const userData = snapshot.data()
+
+        if(!userData ) {
+          return;
+        }
+
+        if(userData.isOnline) {
+          setUserStatus('Online')
+        } else {
+          if(userData.lastSeen) {
+            const time = userData.lastSeen
+                          .toDate()
+                          .toLocaleTimeString([],{
+                            hour:'2-digit',
+                            minute:'2-digit',
+                          })
+            setUserStatus(`Last Seen ${time}`)
+          }else {
+            setUserStatus('Offline')
+          }
+        }
+      })
+      return unsubscribe
+  },[])
+
   return (
     <> 
     <StatusBar barStyle={'dark-content'} />
@@ -24,9 +61,14 @@ const MessagesHeader = () => {
 
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>
+        <View style={{alignItems:'center'}}>
+
+          <Text style={styles.headerTitle}>
           {userName}
         </Text>
+
+        <Text style={styles.statusText}>{userStatus} </Text>
+        </View>
 
         <View style={{width: 28}} />
 
@@ -59,4 +101,9 @@ const styles = StyleSheet.create({
     color: COLORS.primary, //000
     alignSelf:'center'
   },
+  statusText:{
+    fontSize:12,
+    color:'green',
+    marginTop:2,
+  }
 })
