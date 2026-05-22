@@ -8,6 +8,7 @@ const MessagesInput = ({message,setMessage,sendMessage}) => {
     <View style={styles.inputContainer}>
 
         <TextInput
+          placeholderTextColor={COLORS.primary}
           placeholder="Type message..."
           value={message}
           onChangeText={setMessage}

@@ -26,50 +26,65 @@ export const AuthProvider = ({children}) => {
 
   useEffect(() => {
 
-    if(!user?.uid) {
-      return;
-    }
+    const unsubscribe =
+    auth().onAuthStateChanged(
+      async user => {
 
-    const userRef = firestore()
-      .collection('users')
-      .doc(user.uid);
+        setUser(user);
 
-    userRef.update({
-      isOnline:true,
-      lastSeen: firestore.FieldValue.serverTimestamp()
-    })
+        if (user?.uid) {
+          const userRef = firestore()
+            .collection('users')
+            .doc(user.uid);
 
-    const subcription = AppState.addEventListener('change',
-      async nextAppState => {
-        if(nextAppState === 'active') {
-          await userRef.update({ isOnline:true })
-        } else {
-          await userRef.update({ isOnline:false, lastSeen : firestore.FieldValue.serverTimestamp()})
+          await userRef.set(
+            {
+              isOnline: true,
+
+              lastSeen:
+                firestore.FieldValue.serverTimestamp(),
+            },
+            { merge: true },
+          );
+
+          const subscription =
+            AppState.addEventListener(
+              'change',
+              async nextAppState => {
+
+                if (
+                  nextAppState === 'active'
+                ) {
+
+                  await userRef.update({
+                    isOnline: true,
+                  });
+
+                } else {
+
+                  await userRef.update({
+                    isOnline: false,
+
+                    lastSeen:
+                      firestore.FieldValue.serverTimestamp(),
+                  });
+                }
+              },
+            );
+
+          return () => {
+            subscription.remove();
+          };
         }
-      }
-    ) 
 
-    return () => {
-      userRef.update({ 
-        isOnline:false, lastSeen : firestore.FieldValue.serverTimestamp()
-      })
+        if (loading) {
+          setLoading(false);
+        }
+      },
+    );
 
-      subcription.remove()
-    }
+  return unsubscribe;
 
-    // const unsubscribe =
-    //   auth().onAuthStateChanged(
-    //     user => {
-
-    //       setUser(user);
-
-    //       if (loading) {
-    //         setLoading(false);
-    //       }
-    //     },
-    //   );
-
-    // return unsubscribe;
 
   }, [user]);
 
