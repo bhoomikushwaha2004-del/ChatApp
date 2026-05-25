@@ -33,10 +33,49 @@ const Messages = () => {
     return null;
   }
 
-  const roomId =
-    currentUser.uid > otherUser.uid
+  const roomId = currentUser.uid > otherUser.uid
       ? `${currentUser.uid}_${otherUser.uid}`
       : `${otherUser.uid}_${currentUser.uid}`;
+
+  const typingStatus = async typing => {
+    try {
+      await firestore()
+          .collection('users')
+          .doc(currentUser.uid)
+          .set(
+            {
+              isTyping : typing,
+              typingTo : otherUser.uid,
+            },
+            { merge: true }
+          )
+    }
+    catch(err){
+      console.log(err);
+      
+    }
+  }
+
+  const handleTyping = text => {
+    setMessage(text)
+
+    if(text.trim().length > 0) {
+      typingStatus(true)
+
+      if(typingTimeout) {
+        clearTimeout(typingTimeout)
+      }
+
+      typingTimeout = setTimeout(()=> {
+        typingStatus(false)
+      },2000)
+    } else {
+      typingStatus(false)
+    }
+
+  }
+
+  let typingTimeout = null;
 
   // REALTIME LISTENER
 
@@ -116,7 +155,9 @@ const Messages = () => {
           { merge: true },
         );
 
+      await typingStatus(false)
       setMessage('');
+      
     } catch (error) {
       console.log(error);
     } finally{
@@ -228,7 +269,7 @@ const Messages = () => {
 
       <MessagesInput
         message={message}
-        setMessage={setMessage}
+        setMessage={handleTyping}
         sendMessage={sendMessage}
         sending = {sending}
       />
