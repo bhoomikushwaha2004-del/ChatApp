@@ -5,7 +5,7 @@ import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
 
 const FormButton = ({buttonTitle, ...rest}) => {
   return (
-    <TouchableOpacity {...rest } style={styles.buttonContainer} >
+    <TouchableOpacity {...rest} style={styles.buttonContainer} >
         <Text style={styles.buttonText}>{buttonTitle} </Text>
     </TouchableOpacity>
   )

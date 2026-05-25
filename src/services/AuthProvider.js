@@ -9,14 +9,9 @@ import React, {
   useEffect,
 } from 'react';
 import { AppState } from 'react-native';
+import {LoginManager,AccessToken} from 'react-native-fbsdk-next';
 
-import {
-  LoginManager,
-  AccessToken,
-} from 'react-native-fbsdk-next';
-
-export const AuthContext =
-  createContext();
+export const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
 
@@ -115,7 +110,9 @@ export const AuthProvider = ({children}) => {
           email: user.email,
 
           image:user.photoURL || '',
+
           isOnline : true,
+          
           lastSeen:FieldValue.serverTimestamp()
         });
 
