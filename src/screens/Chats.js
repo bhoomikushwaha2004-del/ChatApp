@@ -18,6 +18,7 @@ import ChatHeader from '../components/ChatHeader';
 import ChatSearchTab from '../components/ChatSearchTab';
 import {useNavigation} from '@react-navigation/native';
 import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+// import { LinkPreview } from 'react-native-preview-url';
 
 
 const Chats = () => {
@@ -158,6 +159,8 @@ const Chats = () => {
         <ChatHeader />
 
         <ChatSearchTab />
+
+        {/* <LinkPreview url='https://www.youtube.com/watch?v=HgIW7P4dsXU&list=RDHgIW7P4dsXU&start_radio=1' titleLines={1} descriptionLines={1} /> */}
 
         <FlatList
           data={chats}

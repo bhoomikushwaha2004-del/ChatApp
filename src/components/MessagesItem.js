@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
 import React from 'react';
+import RNLinkPreview from 'react-native-link-preview'
 
 const MessagesItem = ({
   item,
@@ -13,6 +14,10 @@ const MessagesItem = ({
 
   const isMe =
     item.senderId === currentUserId;
+  
+  const urlRegx = /(https?:\/\/[^\s]+)/g;
+
+  const detechUrl = item.text.match(urlRegx)?.[0]
 
   return (
     <View
@@ -46,6 +51,19 @@ const MessagesItem = ({
         {item.text}
 
       </Text>
+      {detechUrl && (
+        <View>
+          <RNLinkPreview
+          text={detechUrl}
+          
+          // containerStyle ={{
+          //   width:230,
+          //   borderRadius:14,
+          //   overflow:'hidden'
+          // }}
+          />
+          </View>
+      )}
 
       <Text
         style={[
