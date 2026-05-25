@@ -1,23 +1,38 @@
 import {
+    Image,
+    Linking,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import RNLinkPreview from 'react-native-link-preview'
 
-const MessagesItem = ({
-  item,
-  currentUserId,
-}) => {
+const MessagesItem = ({item,currentUserId}) => {
+  const [previewData,setPreviewData] = useState(null);
 
-  const isMe =
-    item.senderId === currentUserId;
+  const isMe = item.senderId === currentUserId;
   
   const urlRegx = /(https?:\/\/[^\s]+)/g;
 
   const detechUrl = item.text.match(urlRegx)?.[0]
+
+  useEffect(()=>{
+    if(detechUrl) {
+      RNLinkPreview
+              .getPreview(detechUrl)
+              .then(data => {
+                setPreviewData(data)
+              })
+
+              .catch(err => {
+                console.log(err);
+                
+              })
+    }
+  },[detechUrl])
 
   return (
     <View
@@ -51,7 +66,7 @@ const MessagesItem = ({
         {item.text}
 
       </Text>
-      {detechUrl && (
+      {/* {detechUrl && (
         <View>
           <RNLinkPreview
           text={detechUrl}
@@ -63,6 +78,13 @@ const MessagesItem = ({
           // }}
           />
           </View>
+      )} */}
+      {previewData && (
+        <TouchableOpacity activeOpacity={0.8} onPress={()=> Linking.openURL(detechUrl)}  >
+          <Image source={{uri: previewData.images[0],}} height={140} width='100%' />
+          <Text numberOfLines={1}>{previewData.title} </Text>
+          <Text numberOfLines={1}>{previewData.description} </Text>
+        </TouchableOpacity>
       )}
 
       <Text
