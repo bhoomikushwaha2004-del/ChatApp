@@ -21,6 +21,7 @@ const Messages = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [lastDoc, setLastDoc] = useState(null);
+  const [sending,setSending] = useState(false)
 
   const currentUser = auth().currentUser;
 
@@ -71,6 +72,7 @@ const Messages = () => {
     }
 
     try {
+      setSending(true)
       await firestore()
         .collection('chats')
         .doc(roomId)
@@ -117,6 +119,8 @@ const Messages = () => {
       setMessage('');
     } catch (error) {
       console.log(error);
+    } finally{
+      setSending(false)
     }
   };
 
@@ -226,6 +230,7 @@ const Messages = () => {
         message={message}
         setMessage={setMessage}
         sendMessage={sendMessage}
+        sending = {sending}
       />
     </KeyboardAvoidingView>
   );

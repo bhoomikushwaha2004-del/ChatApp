@@ -83,7 +83,7 @@ const MessagesItem = ({item,currentUserId}) => {
         <TouchableOpacity activeOpacity={0.8} onPress={()=> Linking.openURL(detechUrl)}  >
           <Image source={{uri: previewData.images[0],}} height={140} width='100%' />
           <Text numberOfLines={1}>{previewData.title} </Text>
-          <Text numberOfLines={1}>{previewData.description} </Text>
+          <Text numberOfLines={2}>{previewData.description} </Text>
         </TouchableOpacity>
       )}
 

@@ -3,7 +3,7 @@ import React from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
 
-const MessagesInput = ({message,setMessage,sendMessage}) => {
+const MessagesInput = ({message,setMessage,sendMessage,sending}) => {
   return (
     <View style={styles.inputContainer}>
 
@@ -17,6 +17,7 @@ const MessagesInput = ({message,setMessage,sendMessage}) => {
 
         <TouchableOpacity
           style={styles.sendButton}
+          disabled={sending}
           onPress={sendMessage}>
 
           <Ionicons
