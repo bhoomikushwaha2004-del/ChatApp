@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import {
+    ActivityIndicator,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -8,7 +9,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FieldValue } from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import MessagesHeader from '../components/MessagesHeader';
 import MessagesItem from '../components/MessagesItem';
@@ -22,6 +23,7 @@ const Messages = () => {
   const [messages, setMessages] = useState([]);
   const [lastDoc, setLastDoc] = useState(null);
   const [sending,setSending] = useState(false)
+  const [loading,setLoading] = useState(false);
 
   const currentUser = auth().currentUser;
 
@@ -86,10 +88,23 @@ const Messages = () => {
       .collection('messages')
       .orderBy('createdAt', 'desc')
       .limit(15)
+      
       .onSnapshot(snapshot => {
         // if(!snapshot) {
         //   return;
         // }
+        firestore()
+            .collection('chats')
+            .doc(roomId)
+            .set(
+              {
+                unreadCount: {
+                  [currentUser.uid]: 0
+                }
+              },
+              { merge : true }
+            )
+
         const allMessages = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
@@ -99,6 +114,7 @@ const Messages = () => {
 
         setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
       });
+      
 
     return unsubscribe;
   }, [roomId]);
@@ -145,11 +161,18 @@ const Messages = () => {
 
                 image: otherUser.image || '',
               },
+
+              
             ],
 
             lastMessage: message,
 
             updatedAt: new Date(),
+
+            unreadCount :{
+                [currentUser.uid]:0,
+                [otherUser.uid]: FieldValue.increment(1)
+            }
             // firestore.FieldValue.serverTimestamp(),
           },
           { merge: true },
@@ -168,11 +191,14 @@ const Messages = () => {
   // PAGINATION
 
   const loadMoreMessages = async () => {
-    if (!lastDoc) {
+    if (!lastDoc || loading) {
       return;
     }
 
-    const newMessages = await firestore()
+    try{
+      setLoading(true)
+
+      const newMessages = await firestore()
       .collection('chats')
       .doc(roomId)
       .collection('messages')
@@ -191,18 +217,55 @@ const Messages = () => {
 
       setLastDoc(newMessages.docs[newMessages.docs.length - 1]);
     }
+    }
+    catch(err){
+      console.log(err);
+      
+    }
+     finally {
+      setLoading(false)
+     }
+
+    // const newMessages = await firestore()
+    //   .collection('chats')
+    //   .doc(roomId)
+    //   .collection('messages')
+    //   .orderBy('createdAt', 'desc')
+    //   .startAfter(lastDoc)
+    //   .limit(15)
+    //   .get();
+
+    // if (!newMessages.empty) {
+    //   const olderMessages = newMessages.docs.map(doc => ({
+    //     id: doc.id,
+    //     ...doc.data(),
+    //   }));
+
+    //   setMessages(prev => [...prev, ...olderMessages]);
+
+    //   setLastDoc(newMessages.docs[newMessages.docs.length - 1]);
+    // }
   };
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 25}
     >
       <MessagesHeader />
 
       <FlatList
         data={messages}
         keyExtractor={item => item.id}
+        ListFooterComponent={
+          loading ? (
+            <View style={{paddingVertical:15}}>
+              <ActivityIndicator size={'small'} color={COLORS.blue} />
+              {/* <Text>Loading Older Messages</Text> */}
+            </View>
+          ):null
+        }
         renderItem={({ item, index }) => {
           const currentDate = item.createdAt?.toDate
             ? item.createdAt.toDate().toDateString()

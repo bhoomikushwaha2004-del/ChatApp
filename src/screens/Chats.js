@@ -132,11 +132,18 @@ const Chats = () => {
 
               ...otherUser,
 
-              lastMessage:
-                data.lastMessage,
+              lastMessage: data.lastMessage,
 
-              updatedAt:
-                data.updatedAt,
+              updatedAt: data.updatedAt,
+
+              unread: data.unreadCount?.[currentUser.uid] || 0,
+
+              time: data.updatedAt 
+                      ?.toDate()
+                      ?.toLocaleTimeString([],{
+                        hour:'2-digit',
+                        minute:'2-digit'
+                      })
             };
           });
 
