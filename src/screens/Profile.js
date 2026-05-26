@@ -7,10 +7,8 @@ import {
   Image,
   Switch,
 } from 'react-native';
-
 import { AuthContext } from '../services/AuthProvider';
 import useTheme from '../theme/useTheme';
-
 import { SIZES, FONT_SIZE, BORDER_RADIUS } from '../styles';
 
 const Profile = () => {
