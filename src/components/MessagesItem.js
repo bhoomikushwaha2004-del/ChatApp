@@ -55,6 +55,13 @@ const MessagesItem = ({item,currentUserId}) => {
         </Text>
       )}
 
+      {previewData && (
+        <TouchableOpacity activeOpacity={0.8} onPress={()=> Linking.openURL(detechUrl)}  >
+          <Image source={{uri: previewData.images[0],}} height={140} width='100%' />
+          <Text numberOfLines={1}>{previewData.title} </Text>
+          <Text numberOfLines={2}>{previewData.description} </Text>
+        </TouchableOpacity>
+      )}
       <Text
         style={{
           color: isMe
@@ -66,26 +73,7 @@ const MessagesItem = ({item,currentUserId}) => {
         {item.text}
 
       </Text>
-      {/* {detechUrl && (
-        <View>
-          <RNLinkPreview
-          text={detechUrl}
-          
-          // containerStyle ={{
-          //   width:230,
-          //   borderRadius:14,
-          //   overflow:'hidden'
-          // }}
-          />
-          </View>
-      )} */}
-      {previewData && (
-        <TouchableOpacity activeOpacity={0.8} onPress={()=> Linking.openURL(detechUrl)}  >
-          <Image source={{uri: previewData.images[0],}} height={140} width='100%' />
-          <Text numberOfLines={1}>{previewData.title} </Text>
-          <Text numberOfLines={2}>{previewData.description} </Text>
-        </TouchableOpacity>
-      )}
+      
 
       <Text
         style={[
