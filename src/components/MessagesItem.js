@@ -9,6 +9,7 @@ import {
 import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
 import React, { useEffect, useState } from 'react';
 import RNLinkPreview from 'react-native-link-preview'
+import Tick from 'react-native-vector-icons/Ionicons'
 
 const MessagesItem = ({item,currentUserId}) => {
   const [previewData,setPreviewData] = useState(null);
@@ -75,7 +76,9 @@ const MessagesItem = ({item,currentUserId}) => {
       </Text>
       
 
-      <Text
+      <View style={styles.bottomRow}>
+
+        <Text
         style={[
           styles.time,
           {
@@ -96,6 +99,15 @@ const MessagesItem = ({item,currentUserId}) => {
           : ''}
 
       </Text>
+
+      {isMe && (
+        <Tick name={item.status === 'sent' ? 'checkmark-done' 
+                  : item.status === 'delivered' ? 'checkmark-done'
+                  : 'checkmark'
+        } size={16} color={ item.status === 'seen' ? '#041b25' : COLORS.lightGrey } style={{marginLeft:4}} />
+      )}
+
+      </View>
 
     </View>
   );
@@ -122,4 +134,10 @@ const styles = StyleSheet.create({
     marginTop: SIZES.extraExtraSmall, //6
     alignSelf: 'flex-end',
   },
+  bottomRow:{
+    flexDirection:'row',
+    alignItems:'center',
+    alignSelf:'flex-end',
+    marginTop:6
+  }
 });

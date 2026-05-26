@@ -89,10 +89,7 @@ const Messages = () => {
       .orderBy('createdAt', 'desc')
       .limit(15)
       
-      .onSnapshot(snapshot => {
-        // if(!snapshot) {
-        //   return;
-        // }
+      .onSnapshot( async snapshot => {
         firestore()
             .collection('chats')
             .doc(roomId)
@@ -105,10 +102,24 @@ const Messages = () => {
               { merge : true }
             )
 
+            // msg status update
+            const batch = firestore().batch()
+                  snapshot.docs.forEach(doc => {
+                    const msg = doc.data()
+
+                    if(msg.senderId !== currentUser.uid && msg.status === 'sent') {
+                      batch.update(doc.ref, { status : 'delivered'})
+                    }
+                  })
+
+                  await batch.commit()
+
         const allMessages = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
         }));
+
+
 
         setMessages(allMessages);
 
@@ -137,7 +148,7 @@ const Messages = () => {
           senderId: currentUser.uid,
           senderName: currentUser.displayName || 'no name',
           createdAt: new Date(),
-          // firestore.FieldValue.serverTimestamp(),
+          status:'sent',
         });
 
       await firestore()
