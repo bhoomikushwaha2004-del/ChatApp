@@ -1,44 +1,56 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, TextInput, View } from 'react-native';
+import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+import { SIZES, FONT_SIZE, BORDER_RADIUS, ELEVATION } from '../styles';
+import useTheme from '../theme/useTheme';
 
 const ChatSearchTab = () => {
+  const { theme, darkMode } = useTheme();
+
   return (
-    <View style={styles.searchContainer}>
-          <Ionicons
-            name="search"
-            size={20}
-            color="gray"
-          />
+    <View
+      style={[
+        styles.searchContainer,
+        {
+          backgroundColor: theme.card,
+        },
+      ]}
+    >
+      <Ionicons name="search" size={20} color={darkMode ? '#B0B0B0' : 'gray'} />
 
-          <TextInput
-            placeholder="Search chats..."
-            placeholderTextColor="gray"
-            style={styles.searchInput}
-          />
-        </View>
-  )
-}
+      <TextInput
+        placeholder="Search chats..."
+        placeholderTextColor={darkMode ? '#B0B0B0' : 'gray'}
+        style={[
+          styles.searchInput,
+          {
+            color: theme.text,
+          },
+        ]}
+      />
+    </View>
+  );
+};
 
-export default ChatSearchTab
+export default ChatSearchTab;
 
 const styles = StyleSheet.create({
-    searchContainer: {
+  searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.secondary, //fff
-    borderRadius: BORDER_RADIUS.m, //16
-    paddingHorizontal: SIZES.smallest, //15
-    marginBottom: SIZES.xxs, //20
-    height: SIZES.extraExtraLarge, //55
-    elevation: ELEVATION.small, //2
+
+    borderRadius: BORDER_RADIUS.m,
+    paddingHorizontal: SIZES.smallest,
+
+    marginBottom: SIZES.xxs,
+    height: SIZES.extraExtraLarge,
+
+    elevation: ELEVATION.small,
   },
 
   searchInput: {
-    flex: SIZES.xtraXtraXtraS, //1
-    marginLeft: SIZES.extraSmall, //10
-    color: COLORS.primary, //000
-    fontSize: FONT_SIZE.xxs, //16
+    flex: SIZES.xtraXtraXtraS,
+    marginLeft: SIZES.extraSmall,
+    fontSize: FONT_SIZE.xxs,
   },
-})
+});

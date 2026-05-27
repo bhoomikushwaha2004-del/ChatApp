@@ -1,10 +1,9 @@
 import React from 'react';
-import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
-import {windowHeight, windowWidth} from '../utils/Dimentions';
-import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
-
-
+import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { windowHeight } from '../utils/Dimentions';
+import { SIZES, FONT_SIZE, BORDER_RADIUS } from '../styles';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import useTheme from '../theme/useTheme';
 
 const SocialButton = ({
   buttonTitle,
@@ -13,16 +12,40 @@ const SocialButton = ({
   backgroundColor,
   ...rest
 }) => {
-  let bgColor = backgroundColor;
+  const { theme, darkMode } = useTheme();
+
+  let bgColor = backgroundColor || theme.card;
+
   return (
     <TouchableOpacity
-      style={[styles.buttonContainer, {backgroundColor: bgColor}]}
-      {...rest}>
+      style={[
+        styles.buttonContainer,
+        {
+          backgroundColor: bgColor,
+        },
+      ]}
+      {...rest}
+    >
       <View style={styles.iconWrapper}>
-        <FontAwesome name={btnType} style={styles.icon} size={22} color={color} />
+        <FontAwesome
+          name={btnType}
+          style={styles.icon}
+          size={22}
+          color={color || theme.text}
+        />
       </View>
+
       <View style={styles.btnTxtWrapper}>
-        <Text style={[styles.buttonText, {color: color}]}>{buttonTitle}</Text>
+        <Text
+          style={[
+            styles.buttonText,
+            {
+              color: color || theme.text,
+            },
+          ]}
+        >
+          {buttonTitle}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -32,28 +55,38 @@ export default SocialButton;
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    marginTop: SIZES.extraSmall, //10
+    marginTop: SIZES.extraSmall,
+
     width: '100%',
     height: windowHeight / 15,
-    padding: SIZES.extraSmall, //10
+
+    padding: SIZES.extraSmall,
+
     flexDirection: 'row',
-    borderRadius: BORDER_RADIUS.s, //3
+
+    borderRadius: BORDER_RADIUS.s,
   },
+
   iconWrapper: {
-    width: SIZES.extraExtraMedium, //30
+    width: SIZES.extraExtraMedium,
+
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   icon: {
     fontWeight: 'bold',
   },
+
   btnTxtWrapper: {
-    flex: SIZES.xtraXtraXtraS, //1
+    flex: SIZES.xtraXtraXtraS,
+
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   buttonText: {
-    fontSize: FONT_SIZE.m, //18
+    fontSize: FONT_SIZE.m,
     fontWeight: 'bold',
   },
 });

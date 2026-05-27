@@ -1,76 +1,94 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+import { SIZES, FONT_SIZE, BORDER_RADIUS, ELEVATION } from '../styles';
+import useTheme from '../theme/useTheme';
 
-const ContactHeader = ({contacts}) => {
-    const navigation = useNavigation()
+const ContactHeader = ({ contacts }) => {
+  const navigation = useNavigation();
+
+  const { theme, darkMode } = useTheme();
+
   return (
-    <View style={styles.header}>
+    <View
+      style={[
+        styles.header,
+        {
+          backgroundColor: theme.background,
+        },
+      ]}
+    >
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={[
+          styles.backBtn,
+          {
+            backgroundColor: theme.card,
+          },
+        ]}
+      >
+        <Ionicons name="arrow-back" size={SIZES.xxxs} color={theme.text} />
+      </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backBtn}>
+      <View>
+        <Text
+          style={[
+            styles.headerTitle,
+            {
+              color: theme.text,
+            },
+          ]}
+        >
+          Select Contact
+        </Text>
 
-          <Ionicons
-            name="arrow-back"
-            size={SIZES.xxxs} //24
-            color={COLORS.primary} //000
-          />
-
-        </TouchableOpacity>
-
-        <View>
-
-          <Text style={styles.headerTitle}>
-            Select Contact
-          </Text>
-
-          <Text style={styles.headerSubTitle}>
-            {contacts.length} contacts
-          </Text>
-
-        </View>
-
+        <Text
+          style={[
+            styles.headerSubTitle,
+            {
+              color: darkMode ? '#B0B0B0' : 'gray',
+            },
+          ]}
+        >
+          {contacts.length} contacts
+        </Text>
       </View>
-  )
-}
+    </View>
+  );
+};
 
-export default ContactHeader
+export default ContactHeader;
 
 const styles = StyleSheet.create({
-    header: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
 
-    paddingHorizontal: SIZES.xs, //18
-    paddingVertical: SIZES.s, //16
+    paddingHorizontal: SIZES.xs,
+    paddingVertical: SIZES.s,
   },
 
   backBtn: {
-    width: SIZES.mediumest, //45
-    height: SIZES.mediumest, //45
-    borderRadius: BORDER_RADIUS.xxm, //22
+    width: SIZES.mediumest,
+    height: SIZES.mediumest,
 
-    backgroundColor: COLORS.secondary, //fff
+    borderRadius: BORDER_RADIUS.xxm,
 
     justifyContent: 'center',
     alignItems: 'center',
 
-    marginRight: SIZES.smaller, //14
+    marginRight: SIZES.smaller,
 
-    elevation: ELEVATION.medium, //3
+    elevation: ELEVATION.medium,
   },
 
   headerTitle: {
-    fontSize: FONT_SIZE.l, //22
+    fontSize: FONT_SIZE.l,
     fontWeight: '700',
-    color: COLORS.primary, //000
   },
 
   headerSubTitle: {
-    color: 'gray',
-    marginTop: SIZES.xtraXtraS, //2
+    marginTop: SIZES.xtraXtraS,
   },
-})
+});

@@ -1,72 +1,85 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+import { SIZES, COLORS, BORDER_RADIUS } from '../styles';
+import useTheme from '../theme/useTheme';
 
-const MessagesInput = ({message,setMessage,sendMessage,sending}) => {
+const MessagesInput = ({ message, setMessage, sendMessage, sending }) => {
+  const { theme, darkMode } = useTheme();
+
   return (
-    <View style={styles.inputContainer}>
+    <View
+      style={[
+        styles.inputContainer,
+        {
+          backgroundColor: theme.background,
 
-        <TextInput
-          placeholderTextColor={COLORS.primary}
-          placeholder="Type message..."
-          value={message}
-          onChangeText={setMessage}
-          style={styles.input}
-        />
+          borderColor: darkMode ? '#2A2A2A' : COLORS.secondWhite,
+        },
+      ]}
+    >
+      <TextInput
+        placeholder="Type message..."
+        placeholderTextColor={darkMode ? '#B0B0B0' : COLORS.primary}
+        value={message}
+        onChangeText={setMessage}
+        style={[
+          styles.input,
+          {
+            backgroundColor: theme.card,
 
-        <TouchableOpacity
-          style={styles.sendButton}
-          disabled={sending}
-          onPress={sendMessage}>
+            color: theme.text,
+          },
+        ]}
+      />
 
-          <Ionicons
-            name="send"
-            size={SIZES.xxs} //20
-            color={COLORS.secondary} //fff
-          />
+      <TouchableOpacity
+        style={[
+          styles.sendButton,
+          {
+            backgroundColor: theme.button,
+          },
+        ]}
+        disabled={sending}
+        onPress={sendMessage}
+      >
+        <Ionicons name="send" size={SIZES.xxs} color={COLORS.secondary} />
+      </TouchableOpacity>
+    </View>
+  );
+};
 
-        </TouchableOpacity>
-
-      </View>
-  )
-}
-
-export default MessagesInput
+export default MessagesInput;
 
 const styles = StyleSheet.create({
-    inputContainer: {
+  inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
 
-    padding: SIZES.extraSmall, //10
-    borderTopWidth: SIZES.xtraXtraXtraS, //1
-    borderColor: COLORS.secondWhite, //eee
+    padding: SIZES.extraSmall,
+
+    borderTopWidth: SIZES.xtraXtraXtraS,
   },
 
   input: {
-    flex: SIZES.xtraXtraXtraS, //1
-    backgroundColor: COLORS.thirdWhite, //f2f2f2
+    flex: SIZES.xtraXtraXtraS,
 
-    borderRadius: BORDER_RADIUS.l, //30
+    borderRadius: BORDER_RADIUS.l,
 
-    paddingHorizontal: SIZES.xs, //18
-    height: SIZES.m, //50
+    paddingHorizontal: SIZES.xs,
 
-    color: COLORS.primary, //000
+    height: SIZES.m,
   },
 
   sendButton: {
-    width: SIZES.m, //50
-    height: SIZES.m, //50
+    width: SIZES.m,
+    height: SIZES.m,
 
-    borderRadius: BORDER_RADIUS.xxxm, //25
-
-    backgroundColor: COLORS.blue, //2e64e5
+    borderRadius: BORDER_RADIUS.xxxm,
 
     justifyContent: 'center',
     alignItems: 'center',
 
-    marginLeft: SIZES.extraSmall, //10
+    marginLeft: SIZES.extraSmall,
   },
-})
+});

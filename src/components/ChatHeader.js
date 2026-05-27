@@ -1,50 +1,84 @@
-import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import {
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+import { SIZES, FONT_SIZE, BORDER_RADIUS, ELEVATION } from '../styles';
+import useTheme from '../theme/useTheme';
 
 const ChatHeader = () => {
+  const { theme, darkMode } = useTheme();
+
   return (
-    <> 
-    <StatusBar barStyle={'dark-content'} />
-    <View style={styles.header}>
-          <Text style={styles.headerTitle}>
-            Chats
-          </Text>
+    <>
+      <StatusBar
+        backgroundColor={theme.background}
+        barStyle={darkMode ? 'light-content' : 'dark-content'}
+      />
 
-          <TouchableOpacity style={styles.iconButton}>
-            <Ionicons
-              name="camera-outline"
-              size={SIZES.xxxs} //24
-              color={COLORS.primary} //000
-            />
-          </TouchableOpacity>
-        </View>
-        </>
-  )
-}
+      <View
+        style={[
+          styles.header,
+          {
+            backgroundColor: theme.background,
+          },
+        ]}
+      >
+        <Text
+          style={[
+            styles.headerTitle,
+            {
+              color: theme.text,
+            },
+          ]}
+        >
+          Chats
+        </Text>
 
-export default ChatHeader
+        <TouchableOpacity
+          style={[
+            styles.iconButton,
+            {
+              backgroundColor: theme.card,
+            },
+          ]}
+        >
+          <Ionicons
+            name="camera-outline"
+            size={SIZES.xxxs}
+            color={theme.text}
+          />
+        </TouchableOpacity>
+      </View>
+    </>
+  );
+};
+
+export default ChatHeader;
 
 const styles = StyleSheet.create({
-    header: {
+  header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: SIZES.xxs, //20
+    marginBottom: SIZES.xxs,
   },
+
   headerTitle: {
-    fontSize: FONT_SIZE.xxl, //32
+    fontSize: FONT_SIZE.xxl,
     fontWeight: '800',
-    color: COLORS.primary, //000
   },
+
   iconButton: {
-    width: SIZES.mediumest, //45
-    height: SIZES.mediumest, //45
-    backgroundColor: COLORS.secondary, //fff
+    width: SIZES.mediumest,
+    height: SIZES.mediumest,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: BORDER_RADIUS.xxxxs, //15
-    elevation: ELEVATION.medium, //3
+    borderRadius: BORDER_RADIUS.xxxxs,
+    elevation: ELEVATION.medium,
   },
-})
+});

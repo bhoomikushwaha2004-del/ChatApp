@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-
 import {
-    ActivityIndicator,
+  ActivityIndicator,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -15,67 +14,70 @@ import MessagesHeader from '../components/MessagesHeader';
 import MessagesItem from '../components/MessagesItem';
 import MessagesInput from '../components/MessagesInput';
 import { useRoute } from '@react-navigation/native';
-import { SIZES, FONT_SIZE, COLORS, BORDER_RADIUS, ELEVATION } from '../styles';
-import NoChat from 'react-native-vector-icons/Feather'
+import { SIZES, FONT_SIZE, COLORS } from '../styles';
+import NoChat from 'react-native-vector-icons/Feather';
+import useTheme from '../theme/useTheme';
 
 const Messages = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [lastDoc, setLastDoc] = useState(null);
-  const [sending,setSending] = useState(false)
-  const [loading,setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const currentUser = auth().currentUser;
 
   const route = useRoute();
-
   const otherUser = route.params?.otherUser;
+
+  const { theme, darkMode } = useTheme();
 
   if (!otherUser) {
     return null;
   }
 
-  const roomId = currentUser.uid > otherUser.uid
+  const roomId =
+    currentUser.uid > otherUser.uid
       ? `${currentUser.uid}_${otherUser.uid}`
       : `${otherUser.uid}_${currentUser.uid}`;
 
   const typingStatus = async typing => {
     try {
       await firestore()
-          .collection('users')
-          .doc(currentUser.uid)
-          .set(
-            {
-              isTyping : typing,
-              typingTo : otherUser.uid,
-            },
-            { merge: true }
-          )
-    }
-    catch(err){
+        .collection('users')
+
+        .doc(currentUser.uid)
+
+        .set(
+          {
+            isTyping: typing,
+            typingTo: otherUser.uid,
+          },
+
+          { merge: true },
+        );
+    } catch (err) {
       console.log(err);
-      
     }
-  }
+  };
 
   const handleTyping = text => {
-    setMessage(text)
+    setMessage(text);
 
-    if(text.trim().length > 0) {
-      typingStatus(true)
+    if (text.trim().length > 0) {
+      typingStatus(true);
 
-      if(typingTimeout) {
-        clearTimeout(typingTimeout)
+      if (typingTimeout) {
+        clearTimeout(typingTimeout);
       }
 
-      typingTimeout = setTimeout(()=> {
-        typingStatus(false)
-      },2000)
+      typingTimeout = setTimeout(() => {
+        typingStatus(false);
+      }, 2000);
     } else {
-      typingStatus(false)
+      typingStatus(false);
     }
-
-  }
+  };
 
   let typingTimeout = null;
 
@@ -84,48 +86,54 @@ const Messages = () => {
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('chats')
+
       .doc(roomId)
+
       .collection('messages')
+
       .orderBy('createdAt', 'desc')
+
       .limit(15)
-      
-      .onSnapshot( async snapshot => {
+
+      .onSnapshot(async snapshot => {
         firestore()
-            .collection('chats')
-            .doc(roomId)
-            .set(
-              {
-                unreadCount: {
-                  [currentUser.uid]: 0
-                }
+          .collection('chats')
+
+          .doc(roomId)
+
+          .set(
+            {
+              unreadCount: {
+                [currentUser.uid]: 0,
               },
-              { merge : true }
-            )
+            },
 
-            // msg status update
-            const batch = firestore().batch()
-                  snapshot.docs.forEach(doc => {
-                    const msg = doc.data()
+            { merge: true },
+          );
 
-                    if(msg.senderId !== currentUser.uid && msg.status === 'sent') {
-                      batch.update(doc.ref, { status : 'delivered'})
-                    }
-                  })
+        const batch = firestore().batch();
 
-                  await batch.commit()
+        snapshot.docs.forEach(doc => {
+          const msg = doc.data();
+
+          if (msg.senderId !== currentUser.uid && msg.status === 'sent') {
+            batch.update(doc.ref, {
+              status: 'delivered',
+            });
+          }
+        });
+
+        await batch.commit();
 
         const allMessages = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
         }));
 
-
-
         setMessages(allMessages);
 
         setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
       });
-      
 
     return unsubscribe;
   }, [roomId]);
@@ -138,22 +146,32 @@ const Messages = () => {
     }
 
     try {
-      setSending(true)
+      setSending(true);
+
       await firestore()
         .collection('chats')
+
         .doc(roomId)
+
         .collection('messages')
+
         .add({
           text: message,
+
           senderId: currentUser.uid,
+
           senderName: currentUser.displayName || 'no name',
+
           createdAt: new Date(),
-          status:'sent',
+
+          status: 'sent',
         });
 
       await firestore()
         .collection('chats')
+
         .doc(roomId)
+
         .set(
           {
             participants: [currentUser.uid, otherUser.uid],
@@ -161,6 +179,7 @@ const Messages = () => {
             users: [
               {
                 uid: currentUser.uid,
+
                 name: currentUser.displayName || 'No Name',
 
                 image: currentUser.photoURL || '',
@@ -168,34 +187,34 @@ const Messages = () => {
 
               {
                 uid: otherUser.uid,
+
                 name: otherUser.name,
 
                 image: otherUser.image || '',
               },
-
-              
             ],
 
             lastMessage: message,
 
             updatedAt: new Date(),
 
-            unreadCount :{
-                [currentUser.uid]:0,
-                [otherUser.uid]: FieldValue.increment(1)
-            }
-            // firestore.FieldValue.serverTimestamp(),
+            unreadCount: {
+              [currentUser.uid]: 0,
+
+              [otherUser.uid]: FieldValue.increment(1),
+            },
           },
+
           { merge: true },
         );
 
-      await typingStatus(false)
+      await typingStatus(false);
+
       setMessage('');
-      
     } catch (error) {
       console.log(error);
-    } finally{
-      setSending(false)
+    } finally {
+      setSending(false);
     }
   };
 
@@ -206,61 +225,49 @@ const Messages = () => {
       return;
     }
 
-    try{
-      setLoading(true)
+    try {
+      setLoading(true);
 
       const newMessages = await firestore()
-      .collection('chats')
-      .doc(roomId)
-      .collection('messages')
-      .orderBy('createdAt', 'desc')
-      .startAfter(lastDoc)
-      .limit(15)
-      .get();
+        .collection('chats')
 
-    if (!newMessages.empty) {
-      const olderMessages = newMessages.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+        .doc(roomId)
 
-      setMessages(prev => [...prev, ...olderMessages]);
+        .collection('messages')
 
-      setLastDoc(newMessages.docs[newMessages.docs.length - 1]);
-    }
-    }
-    catch(err){
+        .orderBy('createdAt', 'desc')
+
+        .startAfter(lastDoc)
+
+        .limit(15)
+
+        .get();
+
+      if (!newMessages.empty) {
+        const olderMessages = newMessages.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setMessages(prev => [...prev, ...olderMessages]);
+
+        setLastDoc(newMessages.docs[newMessages.docs.length - 1]);
+      }
+    } catch (err) {
       console.log(err);
-      
+    } finally {
+      setLoading(false);
     }
-     finally {
-      setLoading(false)
-     }
-
-    // const newMessages = await firestore()
-    //   .collection('chats')
-    //   .doc(roomId)
-    //   .collection('messages')
-    //   .orderBy('createdAt', 'desc')
-    //   .startAfter(lastDoc)
-    //   .limit(15)
-    //   .get();
-
-    // if (!newMessages.empty) {
-    //   const olderMessages = newMessages.docs.map(doc => ({
-    //     id: doc.id,
-    //     ...doc.data(),
-    //   }));
-
-    //   setMessages(prev => [...prev, ...olderMessages]);
-
-    //   setLastDoc(newMessages.docs[newMessages.docs.length - 1]);
-    // }
   };
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[
+        styles.container,
+        {
+          backgroundColor: theme.background,
+        },
+      ]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 25}
     >
@@ -271,11 +278,14 @@ const Messages = () => {
         keyExtractor={item => item.id}
         ListFooterComponent={
           loading ? (
-            <View style={{paddingVertical:15}}>
-              <ActivityIndicator size={'small'} color={COLORS.blue} />
-              {/* <Text>Loading Older Messages</Text> */}
+            <View
+              style={{
+                paddingVertical: 15,
+              }}
+            >
+              <ActivityIndicator size={'small'} color={theme.button} />
             </View>
-          ):null
+          ) : null
         }
         renderItem={({ item, index }) => {
           const currentDate = item.createdAt?.toDate
@@ -291,8 +301,22 @@ const Messages = () => {
           return (
             <>
               {showDate && (
-                <View style={styles.dateContainer}>
-                  <Text style={styles.dateText}>
+                <View
+                  style={[
+                    styles.dateContainer,
+                    {
+                      backgroundColor: darkMode ? '#2A2A2A' : '#EAEAEA',
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.dateText,
+                      {
+                        color: theme.text,
+                      },
+                    ]}
+                  >
                     {item.createdAt?.toDate().toLocaleDateString([], {
                       day: 'numeric',
                       month: 'short',
@@ -308,36 +332,39 @@ const Messages = () => {
         inverted
         onEndReached={loadMoreMessages}
         onEndReachedThreshold={0.3}
-        ListEmptyComponent={(
-          <View
-              style={
-                styles.emptyContainer
-              }>
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <NoChat
+              name="message-circle"
+              size={SIZES.xl}
+              color={darkMode ? '#666' : COLORS.greyest}
+            />
 
-              <NoChat
-                name="message-circle"
-                size={SIZES.xl} //80
-                color={COLORS.greyest} //ccc
-              />
+            <Text
+              style={[
+                styles.emptyText,
+                {
+                  color: theme.text,
+                },
+              ]}
+            >
+              No Chats Yet
+            </Text>
 
-              <Text
-                style={styles.emptyText}>
-
-                No Chats Yet
-
-              </Text>
-
-              <Text
-                style={styles.subText}>
-
-                Start messaging to see chats here
-
-              </Text>
-
-            </View>
-        )}
+            <Text
+              style={[
+                styles.subText,
+                {
+                  color: darkMode ? '#B0B0B0' : 'gray',
+                },
+              ]}
+            >
+              Start messaging to see chats here
+            </Text>
+          </View>
+        }
         contentContainerStyle={{
-          padding: SIZES.smallest, //15
+          padding: SIZES.smallest,
         }}
       />
 
@@ -345,7 +372,7 @@ const Messages = () => {
         message={message}
         setMessage={handleTyping}
         sendMessage={sendMessage}
-        sending = {sending}
+        sending={sending}
       />
     </KeyboardAvoidingView>
   );
@@ -355,45 +382,47 @@ export default Messages;
 
 const styles = StyleSheet.create({
   container: {
-    flex: SIZES.xtraXtraXtraS, //1
-    backgroundColor: COLORS.secondary, //fff
+    flex: SIZES.xtraXtraXtraS,
   },
-  dateContainer:{
-    alignSelf:'center',
-    backgroundColor:'#EAEAEA',
-    paddingHorizontal:12,
-    paddingVertical:5,
-    borderRadius:10,
-    marginVertical:10,
+
+  dateContainer: {
+    alignSelf: 'center',
+
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+
+    borderRadius: 10,
+
+    marginVertical: 10,
   },
-  dateText:{
-    fontSize:12,
-    color:'#555',
-    fontWeight:'600'
+
+  dateText: {
+    fontSize: 12,
+
+    fontWeight: '600',
   },
+
   emptyContainer: {
-    // flex: SIZES.xtraXtraXtraS, //1
     justifyContent: 'center',
+
     alignItems: 'center',
-    alignSelf:'center',
-    alignContent:'center',
-    
+
+    alignSelf: 'center',
+
+    alignContent: 'center',
   },
 
   emptyText: {
-    fontSize: FONT_SIZE.l, //22
+    fontSize: FONT_SIZE.l,
+
     fontWeight: '700',
 
-    marginTop: SIZES.xxs, //20
-
-    color: COLORS.primary, //000
+    marginTop: SIZES.xxs,
   },
 
   subText: {
-    marginTop: SIZES.xtraExtras, //8
+    marginTop: SIZES.xtraExtras,
 
-    color: 'gray',
-
-    fontSize: FONT_SIZE.xs, //15
+    fontSize: FONT_SIZE.xs,
   },
 });

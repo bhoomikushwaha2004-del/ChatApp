@@ -10,7 +10,7 @@ const ThemeProvider = ({ children }) => {
     const theme = darkMode ? DarkTheme : LightTheme;
 
     const toggleTheme = ()=> {
-        setDarkMode(prev => prev);
+        setDarkMode(prev => !prev);
     }
 
   return (

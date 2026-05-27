@@ -1,151 +1,176 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+import { SIZES, FONT_SIZE, COLORS, BORDER_RADIUS, ELEVATION } from '../styles';
+import useTheme from '../theme/useTheme';
 
-const ChatList = ({item}) => {
-  const navigation = useNavigation()
-   
+const ChatList = ({ item }) => {
+  const navigation = useNavigation();
+
+  const { theme,darkMode } = useTheme();
+
   return (
-      <TouchableOpacity
-        activeOpacity={0.8}
-        style={styles.chatCard}
-        onPress={() =>
-          navigation.navigate('messages', {
-            userName: item.name,
-            otherUser: item,
-          })
-        }>
+    <TouchableOpacity
+      activeOpacity={0.8}
+      style={[
+        styles.chatCard,
+        {
+          backgroundColor: theme.card,
+        },
+      ]}
+      onPress={() =>
+        navigation.navigate('messages', {
+          userName: item.name,
+          otherUser: item,
+        })
+      }
+    >
+      <View style={styles.leftSection}>
+        <View>
+          <Image source={{ uri: item.image }} style={styles.image} />
 
-        <View style={styles.leftSection}>
-
-          <View>
-            <Image
-              source={{uri: item.image}}
-              style={styles.image}
+          {item.online && (
+            <View
+              style={[
+                styles.onlineDot,
+                {
+                  borderColor: theme.card,
+                },
+              ]}
             />
-
-            {item.online && (
-              <View style={styles.onlineDot} />
-            )}
-          </View>
-
-          <View style={styles.textContainer}>
-
-            <Text style={styles.name}>
-              {item.name}
-            </Text>
-
-            <Text
-              numberOfLines={1}
-              style={styles.message}>
-              {item.lastMessage}
-            </Text>
-
-          </View>
+          )}
         </View>
 
-        <View style={styles.rightSection}>
-
-          <Text style={styles.time}>
-            {item.time}
+        <View style={styles.textContainer}>
+          <Text
+            style={[
+              styles.name,
+              {
+                color: theme.text,
+              },
+            ]}
+          >
+            {item.name}
           </Text>
 
-          {item.unread > 0 && (
-            <View style={styles.unreadBadge}>
-              <Text style={styles.unreadText}>
-                {item.unread}
-              </Text>
-            </View>
-          )}
-
+          <Text
+            numberOfLines={1}
+            style={[
+              styles.message,
+              {
+                color: darkMode ? '#B0B0B0' : 'gray',
+              },
+            ]}
+          >
+            {item.lastMessage}
+          </Text>
         </View>
-      </TouchableOpacity>
-    );
-}
+      </View>
 
-export default ChatList
+      <View style={styles.rightSection}>
+        <Text
+          style={[
+            styles.time,
+            {
+              color: darkMode ? '#B0B0B0' : 'gray',
+            },
+          ]}
+        >
+          {item.time}
+        </Text>
+
+        {item.unread > 0 && (
+          <View style={styles.unreadBadge}>
+            <Text style={styles.unreadText}>{item.unread}</Text>
+          </View>
+        )}
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+export default ChatList;
 
 const styles = StyleSheet.create({
-    chatCard: {
+  chatCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
 
-    backgroundColor: COLORS.secondary, //fff
-    padding: SIZES.smaller, //14
-    borderRadius: BORDER_RADIUS.xxm, //22
+    padding: SIZES.smaller,
+    borderRadius: BORDER_RADIUS.xxm,
 
-    marginBottom: SIZES.smaller, //14
+    marginBottom: SIZES.smaller,
 
-    elevation: ELEVATION.small, //2
+    elevation: ELEVATION.small,
   },
 
   leftSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: SIZES.xtraXtraXtraS, //1
+    flex: SIZES.xtraXtraXtraS,
   },
 
   image: {
-    width: SIZES.large, //62
-    height: SIZES.large, //62
-    borderRadius: BORDER_RADIUS.xl, //31
+    width: SIZES.large,
+    height: SIZES.large,
+    borderRadius: BORDER_RADIUS.xl,
   },
 
   onlineDot: {
-    width: SIZES.smallest, //15
-    height: SIZES.smallest, //15
-    borderRadius: BORDER_RADIUS.xs, //8
-    backgroundColor: COLORS.limeGreen, //00c851
+    width: SIZES.smallest,
+    height: SIZES.smallest,
+    borderRadius: BORDER_RADIUS.xs,
+
+    backgroundColor: COLORS.limeGreen,
+
     position: 'absolute',
-    bottom: SIZES.xtraS, //3
-    right: SIZES.xtraS, //3
-    borderWidth: SIZES.xtraXtraS, //2
-    borderColor: COLORS.secondary, //fff
+    bottom: SIZES.xtraS,
+    right: SIZES.xtraS,
+
+    borderWidth: SIZES.xtraXtraS,
   },
 
   textContainer: {
-    marginLeft: SIZES.smaller, //14
-    flex: SIZES.xtraXtraXtraS, //1
+    marginLeft: SIZES.smaller,
+    flex: SIZES.xtraXtraXtraS,
   },
 
   name: {
-    fontSize: FONT_SIZE.xxxs, //17
+    fontSize: FONT_SIZE.xxxs,
     fontWeight: '700',
-    color: COLORS.primary, //000
   },
 
   message: {
-    marginTop: SIZES.extraExtraSmall, //6
-    color: 'gray',
-    fontSize: FONT_SIZE.s, //14
+    marginTop: SIZES.extraExtraSmall,
+    fontSize: FONT_SIZE.s,
   },
 
   rightSection: {
     alignItems: 'flex-end',
     justifyContent: 'space-between',
-    height: SIZES.extraExtraLarge, //55
+    height: SIZES.extraExtraLarge,
   },
 
   time: {
-    color: 'gray',
-    fontSize: FONT_SIZE.xtraSmall, //12
+    fontSize: FONT_SIZE.xtraSmall,
   },
 
   unreadBadge: {
-    backgroundColor: COLORS.blue, //2e64e5
-    minWidth: SIZES.xxxs, //24
-    height: SIZES.xxxs, //24
-    borderRadius: BORDER_RADIUS.xxxs, //12
+    backgroundColor: COLORS.blue,
+    minWidth: SIZES.xxxs,
+    height: SIZES.xxxs,
+    borderRadius: BORDER_RADIUS.xxxs,
+
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: SIZES.extraExtraSmall, //6
+
+    paddingHorizontal: SIZES.extraExtraSmall,
   },
 
   unreadText: {
-    color: COLORS.secondary, //fff
+    color: COLORS.secondary,
     fontWeight: '700',
-    fontSize: FONT_SIZE.xtraSmall, //12
+    fontSize: FONT_SIZE.xtraSmall,
   },
-})
+});

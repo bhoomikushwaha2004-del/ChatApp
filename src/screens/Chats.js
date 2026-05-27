@@ -1,7 +1,5 @@
-import React, {
-  useEffect,
-  useState,
-} from 'react';
+import React, { useEffect, useState } from 'react';
+
 import {
   View,
   StyleSheet,
@@ -16,77 +14,53 @@ import ChatList from '../components/ChatList';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ChatHeader from '../components/ChatHeader';
 import ChatSearchTab from '../components/ChatSearchTab';
-import {useNavigation} from '@react-navigation/native';
-import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
-// import { LinkPreview } from 'react-native-preview-url';
-
+import { useNavigation } from '@react-navigation/native';
+import { SIZES, FONT_SIZE, COLORS, BORDER_RADIUS, ELEVATION } from '../styles';
+import useTheme from '../theme/useTheme';
 
 const Chats = () => {
-
   const [chats, setChats] = useState([]);
 
   const navigation = useNavigation();
 
   const currentUser = auth().currentUser;
+
   const [refreshing, setRefreshing] = useState(false);
 
-   const onRefresh = async () => {
+  const { theme, darkMode } = useTheme();
+
+  const onRefresh = async () => {
     setRefreshing(true);
 
-    try{
-      const unsubscribe = await firestore()
-      .collection('chats')
-      .where(
-        'participants',
-        'array-contains',
-        currentUser.uid,
-      )
+    try {
+      const snapshot = await firestore()
+        .collection('chats')
+        .where('participants', 'array-contains', currentUser.uid)
 
-      .orderBy(
-        'updatedAt',
-        'desc',
-      )
-      .get()
+        .orderBy('updatedAt', 'desc')
 
-      // .onSnapshot(snapshot => 
-      //   if(!snapshot) {
-      //     return ;
-      //   }
+        .get();
 
-        const allChats =
-          snapshot.docs.map(doc => {
+      const allChats = snapshot.docs.map(doc => {
+        const data = doc.data();
 
-            const data = doc.data();
+        const otherUser = data.users.find(user => user.uid !== currentUser.uid);
 
-            // FIND OTHER USER
+        return {
+          id: doc.id,
 
-            const otherUser =
-              data.users.find(
-                user =>
-                  user.uid !==
-                  currentUser.uid,
-              );
+          ...otherUser,
 
-            return {
-              id: doc.id,
+          lastMessage: data.lastMessage,
 
-              ...otherUser,
+          updatedAt: data.updatedAt,
+        };
+      });
 
-              lastMessage:
-                data.lastMessage,
-
-              updatedAt:
-                data.updatedAt,
-            };
-          });
-
-        setChats(allChats);
-      
+      setChats(allChats);
+    } catch (err) {
+      console.log(err);
     }
-      catch(err) {
-        console.log(err);
-        
-      }
 
     setRefreshing(false);
   };
@@ -94,124 +68,109 @@ const Chats = () => {
   // REALTIME CHATS
 
   useEffect(() => {
-
     const unsubscribe = firestore()
       .collection('chats')
-      .where(
-        'participants',
-        'array-contains',
-        currentUser.uid,
-      )
 
-      .orderBy(
-        'updatedAt',
-        'desc',
-      )
+      .where('participants', 'array-contains', currentUser.uid)
+
+      .orderBy('updatedAt', 'desc')
 
       .onSnapshot(snapshot => {
-        if(!snapshot) {
-          return ;
+        if (!snapshot) {
+          return;
         }
 
-        const allChats =
-          snapshot.docs.map(doc => {
+        const allChats = snapshot.docs.map(doc => {
+          const data = doc.data();
 
-            const data = doc.data();
+          const otherUser = data.users.find(
+            user => user.uid !== currentUser.uid,
+          );
 
-            // FIND OTHER USER
+          return {
+            id: doc.id,
 
-            const otherUser =
-              data.users.find(
-                user =>
-                  user.uid !==
-                  currentUser.uid,
-              );
+            ...otherUser,
 
-            return {
-              id: doc.id,
+            lastMessage: data.lastMessage,
 
-              ...otherUser,
+            updatedAt: data.updatedAt,
 
-              lastMessage: data.lastMessage,
+            unread: data.unreadCount?.[currentUser.uid] || 0,
 
-              updatedAt: data.updatedAt,
-
-              unread: data.unreadCount?.[currentUser.uid] || 0,
-
-              time: data.updatedAt 
-                      ?.toDate()
-                      ?.toLocaleTimeString([],{
-                        hour:'2-digit',
-                        minute:'2-digit'
-                      })
-            };
-          });
+            time: data.updatedAt?.toDate()?.toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            }),
+          };
+        });
 
         setChats(allChats);
       });
 
     return unsubscribe;
-
   }, []);
 
   return (
     <>
       <StatusBar
-        barStyle={'dark-content'}
-        backgroundColor={COLORS.secondary} //fff
+        backgroundColor={theme.background}
+        barStyle={darkMode ? 'light-content' : 'dark-content'}
       />
 
-      <View style={styles.container}>
-
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: theme.background,
+          },
+        ]}
+      >
         <ChatHeader />
 
         <ChatSearchTab />
-
-        {/* <LinkPreview url='https://www.youtube.com/watch?v=HgIW7P4dsXU&list=RDHgIW7P4dsXU&start_radio=1' titleLines={1} descriptionLines={1} /> */}
 
         <FlatList
           data={chats}
           refreshing={refreshing}
           onRefresh={onRefresh}
           keyExtractor={item => item.uid}
-
-          renderItem={({item}) => (
-            <ChatList item={item} />
-          )}
-
+          renderItem={({ item }) => <ChatList item={item} />}
           showsVerticalScrollIndicator={false}
-
-          ListEmptyComponent={(
-            <View
-              style={
-                styles.emptyContainer
-              }>
-
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
               <Ionicons
                 name="chatbubble-outline"
-                size={SIZES.xl} //80
-                color={COLORS.greyest} //ccc
+                size={SIZES.xl}
+                color={darkMode ? '#666' : COLORS.greyest}
               />
 
               <Text
-                style={styles.emptyText}>
-
+                style={[
+                  styles.emptyText,
+                  {
+                    color: theme.text,
+                  },
+                ]}
+              >
                 No Chats Yet
-
               </Text>
 
               <Text
-                style={styles.subText}>
-
+                style={[
+                  styles.subText,
+                  {
+                    color: darkMode ? '#B0B0B0' : 'gray',
+                  },
+                ]}
+              >
                 Start messaging to see chats here
-
               </Text>
-
             </View>
-          )}
-
+          }
           contentContainerStyle={{
-            paddingBottom: SIZES.xxl, //100
+            paddingBottom: SIZES.xxl,
+            flexGrow: 1,
           }}
         />
 
@@ -219,21 +178,14 @@ const Chats = () => {
 
         <TouchableOpacity
           style={styles.fab}
-
-          onPress={() =>
-            navigation.navigate(
-              'contacts',
-            )
-          }>
-
+          onPress={() => navigation.navigate('contacts')}
+        >
           <Ionicons
             name="chatbubble-ellipses"
-            size={SIZES.xm} //26
-            color={COLORS.secondary} //fff
+            size={SIZES.xm}
+            color={COLORS.secondary}
           />
-
         </TouchableOpacity>
-
       </View>
     </>
   );
@@ -242,52 +194,49 @@ const Chats = () => {
 export default Chats;
 
 const styles = StyleSheet.create({
-
   container: {
-    flex: SIZES.xtraXtraXtraS, //1
-    backgroundColor: COLORS.white4, //f8f9fd
+    flex: SIZES.xtraXtraXtraS,
 
-    paddingHorizontal: SIZES.s, //16
-    paddingTop: SIZES.medium, //40
+    paddingHorizontal: SIZES.s,
+    paddingTop: SIZES.medium,
   },
 
   fab: {
     position: 'absolute',
-    bottom: SIZES.xxxxs, //25
-    right: SIZES.xxs, //20
 
-    width: SIZES.large, //62
-    height: SIZES.large, //62
-    borderRadius: BORDER_RADIUS.xl, //31
+    bottom: SIZES.xxxxs,
+    right: SIZES.xxs,
 
-    backgroundColor: COLORS.blue, 
+    width: SIZES.large,
+    height: SIZES.large,
+
+    borderRadius: BORDER_RADIUS.xl,
+
+    backgroundColor: COLORS.blue,
 
     justifyContent: 'center',
     alignItems: 'center',
 
-    elevation: ELEVATION.large, //6
+    elevation: ELEVATION.large,
   },
 
   emptyContainer: {
-    flex: SIZES.xtraXtraXtraS, //1
+    flex: SIZES.xtraXtraXtraS,
+
     justifyContent: 'center',
     alignItems: 'center',
   },
 
   emptyText: {
-    fontSize: FONT_SIZE.l, //22
+    fontSize: FONT_SIZE.l,
     fontWeight: '700',
 
-    marginTop: SIZES.xxs, //20
-
-    color: COLORS.primary, //000
+    marginTop: SIZES.xxs,
   },
 
   subText: {
-    marginTop: SIZES.xtraExtras, //8
+    marginTop: SIZES.xtraExtras,
 
-    color: 'gray',
-
-    fontSize: FONT_SIZE.xs, //15
+    fontSize: FONT_SIZE.xs,
   },
 });

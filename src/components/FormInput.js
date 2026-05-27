@@ -1,22 +1,49 @@
 import React from 'react';
-import {View, TextInput, StyleSheet} from 'react-native';
-import {windowHeight, windowWidth} from '../utils/Dimentions';
-import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
-
+import { View, TextInput, StyleSheet } from 'react-native';
+import { windowHeight, windowWidth } from '../utils/Dimentions';
+import { SIZES, FONT_SIZE, COLORS, BORDER_RADIUS } from '../styles';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import useTheme from '../theme/useTheme';
 
-const FormInput = ({labelValue, placeholderText, iconType, ...rest}) => {
+const FormInput = ({ labelValue, placeholderText, iconType, ...rest }) => {
+  const { theme, darkMode } = useTheme();
+
   return (
-    <View style={styles.inputContainer}>
-      <View style={styles.iconStyle}>
-        <AntDesign name={iconType} size={SIZES.xxxxs} color={COLORS.grey} />
+    <View
+      style={[
+        styles.inputContainer,
+        {
+          backgroundColor: theme.card,
+          borderColor: darkMode ? '#3A3A3A' : COLORS.greyest,
+        },
+      ]}
+    >
+      <View
+        style={[
+          styles.iconStyle,
+          {
+            borderRightColor: darkMode ? '#3A3A3A' : COLORS.greyest,
+          },
+        ]}
+      >
+        <AntDesign
+          name={iconType}
+          size={SIZES.xxxxs}
+          color={darkMode ? '#B0B0B0' : COLORS.grey}
+        />
       </View>
+
       <TextInput
         value={labelValue}
-        style={styles.input}
+        style={[
+          styles.input,
+          {
+            color: theme.text,
+          },
+        ]}
         numberOfLines={1}
         placeholder={placeholderText}
-        placeholderTextColor={COLORS.grey}
+        placeholderTextColor={darkMode ? '#B0B0B0' : COLORS.grey}
         {...rest}
       />
     </View>
@@ -27,42 +54,55 @@ export default FormInput;
 
 const styles = StyleSheet.create({
   inputContainer: {
-    marginTop: SIZES.extraExtraExtraSmall, //5
-    marginBottom: SIZES.extraSmall, //10
+    marginTop: SIZES.extraExtraExtraSmall,
+    marginBottom: SIZES.extraSmall,
+
     width: '100%',
     height: windowHeight / 15,
-    borderColor: COLORS.greyest, //ccc
-    borderRadius: BORDER_RADIUS.s, //3
-    borderWidth: SIZES.xtraXtraXtraS, //1
+
+    borderRadius: BORDER_RADIUS.s,
+    borderWidth: SIZES.xtraXtraXtraS,
+
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.secondary, //fff
   },
+
   iconStyle: {
-    padding: SIZES.extraSmall, //10
+    padding: SIZES.extraSmall,
+
     height: '100%',
+
     justifyContent: 'center',
     alignItems: 'center',
-    borderRightColor: COLORS.greyest,
-    borderRightWidth: SIZES.xtraXtraXtraS, //1
-    width: SIZES.m, //50
+
+    borderRightWidth: SIZES.xtraXtraXtraS,
+
+    width: SIZES.m,
   },
+
   input: {
-    padding: SIZES.extraSmall, //10
-    flex: SIZES.xtraXtraXtraS, //1
-    fontSize: FONT_SIZE.xxs, //16
-    color: COLORS.lightBlack, //333
+    padding: SIZES.extraSmall,
+
+    flex: SIZES.xtraXtraXtraS,
+
+    fontSize: FONT_SIZE.xxs,
+
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   inputField: {
-    padding: SIZES.extraSmall, //10
-    marginTop: SIZES.extraExtraExtraSmall, //5
-    marginBottom: SIZES.extraSmall, //10
+    padding: SIZES.extraSmall,
+
+    marginTop: SIZES.extraExtraExtraSmall,
+    marginBottom: SIZES.extraSmall,
+
     width: windowWidth / 1.5,
     height: windowHeight / 15,
-    fontSize: FONT_SIZE.xxs, //16
-    borderRadius: BORDER_RADIUS.xs, //8
-    borderWidth: SIZES.xtraXtraXtraS, //1
+
+    fontSize: FONT_SIZE.xxs,
+
+    borderRadius: BORDER_RADIUS.xs,
+    borderWidth: SIZES.xtraXtraXtraS,
   },
 });

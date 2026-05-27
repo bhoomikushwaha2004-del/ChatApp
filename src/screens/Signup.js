@@ -13,10 +13,9 @@ import FormButton from '../components/FormButton';
 import SocialButton from '../components/SocialButton';
 import { AuthContext } from '../services/AuthProvider';
 import { useNavigation } from '@react-navigation/native';
-import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+import useTheme from '../theme/useTheme';
 
 const Signup = () => {
-
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,24 +23,32 @@ const Signup = () => {
 
   const navigation = useNavigation();
 
-  const {
-    register,
-    googleLogin,
-    fbLogin,
-  } = useContext(AuthContext);
+  const { register, googleLogin, fbLogin } = useContext(AuthContext);
+
+  const { theme, darkMode } = useTheme();
 
   return (
-
     <ScrollView
-      contentContainerStyle={
-        styles.container
-      }>
-
+      contentContainerStyle={[
+        styles.container,
+        {
+          backgroundColor: theme.background,
+        },
+      ]}
+    >
       <StatusBar
-        barStyle={'dark-content'}
+        backgroundColor={theme.background}
+        barStyle={darkMode ? 'light-content' : 'dark-content'}
       />
 
-      <Text style={styles.text}>
+      <Text
+        style={[
+          styles.text,
+          {
+            color: theme.text,
+          },
+        ]}
+      >
         Create an Account
       </Text>
 
@@ -49,9 +56,7 @@ const Signup = () => {
 
       <FormInput
         labelValue={name}
-        onChangeText={userName =>
-          setName(userName)
-        }
+        onChangeText={userName => setName(userName)}
         placeholderText="Full Name"
         iconType="user"
       />
@@ -60,9 +65,7 @@ const Signup = () => {
 
       <FormInput
         labelValue={email}
-        onChangeText={userEmail =>
-          setEmail(userEmail)
-        }
+        onChangeText={userEmail => setEmail(userEmail)}
         placeholderText="Email"
         iconType="mail"
         keyboardType="email-address"
@@ -74,9 +77,7 @@ const Signup = () => {
 
       <FormInput
         labelValue={password}
-        onChangeText={userPassword =>
-          setPassword(userPassword)
-        }
+        onChangeText={userPassword => setPassword(userPassword)}
         placeholderText="Password"
         iconType="lock"
         secureTextEntry={true}
@@ -86,11 +87,7 @@ const Signup = () => {
 
       <FormInput
         labelValue={confirmPassword}
-        onChangeText={userPassword =>
-          setConfirmPassword(
-            userPassword,
-          )
-        }
+        onChangeText={userPassword => setConfirmPassword(userPassword)}
         placeholderText="Confirm Password"
         iconType="lock"
         secureTextEntry={true}
@@ -101,81 +98,69 @@ const Signup = () => {
       <FormButton
         buttonTitle="Sign Up"
         onPress={() => {
-
           if (!name.trim()) {
-            Alert.alert(
-              'Please enter name',
-            );
+            Alert.alert('Please enter name');
+
             return;
           }
 
           if (!email.trim()) {
-            Alert.alert(
-              'Please enter email',
-            );
+            Alert.alert('Please enter email');
+
             return;
           }
 
           if (!password.trim()) {
-            Alert.alert(
-              'Please enter password',
-            );
-            return;
-          }
-
-          if (
-            password !==
-            confirmPassword
-          ) {
-
-            Alert.alert(
-              'Passwords must match',
-            );
+            Alert.alert('Please enter password');
 
             return;
           }
 
-          register(
-            name,
-            email,
-            password,
-          );
+          if (password !== confirmPassword) {
+            Alert.alert('Passwords must match');
+
+            return;
+          }
+
+          register(name, email, password);
         }}
       />
 
       {/* TERMS */}
 
       <View style={styles.textPrivate}>
-
         <Text
-          style={
-            styles.color_textPrivate
-          }>
-          By registering, you confirm
-          that you accept our{' '}
+          style={[
+            styles.color_textPrivate,
+            {
+              color: darkMode ? '#B0B0B0' : 'grey',
+            },
+          ]}
+        >
+          By registering, you confirm that you accept our{' '}
         </Text>
 
-        <TouchableOpacity
-          onPress={() =>
-            Alert.alert(
-              'Terms Clicked!',
-            )
-          }>
-
+        <TouchableOpacity onPress={() => Alert.alert('Terms Clicked!')}>
           <Text
             style={[
               styles.color_textPrivate,
-              { color: '#e88832' },
-            ]}>
+              {
+                color: '#e88832',
+              },
+            ]}
+          >
             Terms of service
           </Text>
-
         </TouchableOpacity>
 
         <Text
-          style={
-            styles.color_textPrivate
-          }>
+          style={[
+            styles.color_textPrivate,
+            {
+              color: darkMode ? '#B0B0B0' : 'grey',
+            },
+          ]}
+        >
           {' '}
           and{' '}
         </Text>
@@ -183,11 +168,13 @@ const Signup = () => {
         <Text
           style={[
             styles.color_textPrivate,
-            { color: '#e88832' },
-          ]}>
+            {
+              color: '#e88832',
+            },
+          ]}
+        >
           Privacy Policy
         </Text>
-
       </View>
 
       {/* FACEBOOK */}
@@ -196,7 +183,7 @@ const Signup = () => {
         buttonTitle="Sign In with Facebook"
         btnType="facebook"
         color="#4867aa"
-        backgroundColor="#e6eaf4"
+        backgroundColor={darkMode ? '#1E2A45' : '#e6eaf4'}
         onPress={() => fbLogin()}
       />
 
@@ -206,7 +193,7 @@ const Signup = () => {
         buttonTitle="Sign In with Google"
         btnType="google"
         color="#de4d41"
-        backgroundColor="#f5e7ea"
+        backgroundColor={darkMode ? '#3A1F24' : '#f5e7ea'}
         onPress={() => googleLogin()}
       />
 
@@ -214,19 +201,19 @@ const Signup = () => {
 
       <TouchableOpacity
         style={styles.navButton}
-        onPress={() =>
-          navigation.navigate(
-            'login',
-          )
-        }>
-
+        onPress={() => navigation.navigate('login')}
+      >
         <Text
-          style={styles.navButtonText}>
+          style={[
+            styles.navButtonText,
+            {
+              color: theme.button,
+            },
+          ]}
+        >
           Have an account? Sign In
         </Text>
-
       </TouchableOpacity>
-
     </ScrollView>
   );
 };
@@ -235,17 +222,19 @@ export default Signup;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f9fafd',
     flex: 1,
+
     justifyContent: 'center',
+
     alignItems: 'center',
+
     padding: 20,
   },
 
   text: {
     fontSize: 28,
+
     marginBottom: 20,
-    color: '#051d5f',
   },
 
   navButton: {
@@ -254,20 +243,23 @@ const styles = StyleSheet.create({
 
   navButtonText: {
     fontSize: 18,
+
     fontWeight: '500',
-    color: '#2e64e5',
   },
 
   textPrivate: {
     flexDirection: 'row',
+
     flexWrap: 'wrap',
+
     marginVertical: 35,
+
     justifyContent: 'center',
   },
 
   color_textPrivate: {
     fontSize: 13,
+
     fontWeight: '400',
-    color: 'grey',
   },
 });

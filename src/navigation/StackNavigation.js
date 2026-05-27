@@ -9,7 +9,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import BottomTabs from './BottomTabs';
 import Messages from '../screens/Messages';
 import Contacts from '../screens/Contacts';
-
+import useTheme from '../theme/useTheme';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,10 +18,14 @@ const StackNavigation = () => {
 
   const { user } = useContext(AuthContext);
 
+  const { theme } = useTheme();
+
   useEffect(() => {
-    AsyncStorage.getItem('alreadyLaunched').then(val => {
+    AsyncStorage.getItem('alreadyLaunched')
+    .then(val => {
       if (val == null) {
         AsyncStorage.setItem('alreadyLaunched', 'true');
+
         setIsFirstLaunch(true);
       } else {
         setIsFirstLaunch(false);
@@ -30,6 +34,7 @@ const StackNavigation = () => {
       GoogleSignin.configure({
         webClientId:
           '51246210108-jrt7jfn89eoscee0ka8enmln5tgn54c9.apps.googleusercontent.com',
+
         offlineAccess: true,
       });
     });
@@ -40,7 +45,15 @@ const StackNavigation = () => {
   }
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+
+        contentStyle: {
+          backgroundColor: theme.background,
+        },
+      }}
+    >
       {user ? (
         <>
           <Stack.Screen name="main" component={BottomTabs} />

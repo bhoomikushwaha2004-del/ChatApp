@@ -1,7 +1,5 @@
-import React, {
-  useEffect,
-  useState,
-} from 'react';
+import React, { useEffect, useState } from 'react';
+
 import {
   FlatList,
   TouchableOpacity,
@@ -18,46 +16,39 @@ import auth from '@react-native-firebase/auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ContactHeader from '../components/ContactHeader';
 import { useNavigation } from '@react-navigation/native';
-import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
-
+import { COLORS } from '../styles';
+import useTheme from '../theme/useTheme';
 
 const Contacts = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
+
   const [users, setUsers] = useState([]);
 
   const currentUser = auth().currentUser;
 
+  const { theme, darkMode } = useTheme();
 
   useEffect(() => {
-
     const unsubscribe = firestore()
       .collection('users')
-      .onSnapshot(snapshot => {
 
+      .onSnapshot(snapshot => {
         const allUsers = snapshot.docs.map(doc => ({
           uid: doc.id,
           ...doc.data(),
         }));
 
-  
-
-        const filteredUsers =
-          allUsers.filter(
-            item =>
-              item.uid !== currentUser.uid,
-          );
+        const filteredUsers = allUsers.filter(
+          item => item.uid !== currentUser.uid,
+        );
 
         setUsers(filteredUsers);
       });
 
     return unsubscribe;
-
   }, []);
 
-
-
   const startConversation = user => {
-
     navigation.navigate('messages', {
       userName: user.name,
       otherUser: user,
@@ -65,12 +56,17 @@ const Contacts = () => {
   };
 
   return (
-
-    <SafeAreaView style={styles.container}>
-
+    <SafeAreaView
+      style={[
+        styles.container,
+        {
+          backgroundColor: theme.background,
+        },
+      ]}
+    >
       <StatusBar
-        backgroundColor="#f8f9fd"
-        barStyle="dark-content"
+        backgroundColor={theme.background}
+        barStyle={darkMode ? 'light-content' : 'dark-content'}
       />
 
       <ContactHeader contacts={users} />
@@ -82,84 +78,87 @@ const Contacts = () => {
         contentContainerStyle={{
           paddingBottom: 20,
         }}
-
-        renderItem={({item}) => (
-
+        renderItem={({ item }) => (
           <TouchableOpacity
             activeOpacity={0.8}
-            style={styles.card}
-            onPress={() =>
-              startConversation(item)
-            }>
-
+            style={[
+              styles.card,
+              {
+                backgroundColor: theme.card,
+              },
+            ]}
+            onPress={() => startConversation(item)}
+          >
             {/* Img */}
 
             <View>
-
               <Image
                 source={{
-                  uri:
-                    item.image ||
-                    'https://i.pravatar.cc/150',
+                  uri: item.image || 'https://i.pravatar.cc/150',
                 }}
                 style={styles.image}
               />
-
             </View>
 
-            {/* User data*/}
+            {/* User data */}
 
             <View style={styles.infoContainer}>
-
-              <Text style={styles.name}>
+              <Text
+                style={[
+                  styles.name,
+                  {
+                    color: theme.text,
+                  },
+                ]}
+              >
                 {item.name}
               </Text>
 
-              <Text style={styles.status}>
+              <Text
+                style={[
+                  styles.status,
+                  {
+                    color: darkMode ? '#B0B0B0' : 'gray',
+                  },
+                ]}
+              >
                 {item.email}
               </Text>
-
             </View>
 
             {/* Chat btn */}
 
-            <View style={styles.chatBtn}>
-
-              <Ionicons
-                name="chatbubble-ellipses"
-                size={20}
-                color="#fff"
-              />
-
+            <View
+              style={[
+                styles.chatBtn,
+                {
+                  backgroundColor: theme.button,
+                },
+              ]}
+            >
+              <Ionicons name="chatbubble-ellipses" size={20} color="#fff" />
             </View>
-
           </TouchableOpacity>
         )}
       />
-
     </SafeAreaView>
   );
 };
 
 export default Contacts;
 
-const styles = StyleSheet.create({
 
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fd',
 
-    paddingTop:
-      Platform.OS === 'android'
-        ? StatusBar.currentHeight
-        : 0,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
 
   card: {
     flexDirection: 'row',
-    alignItems: 'center',
 
-    backgroundColor: '#fff',
+    alignItems: 'center',
 
     marginHorizontal: 16,
     marginBottom: 14,
@@ -174,32 +173,33 @@ const styles = StyleSheet.create({
   image: {
     width: 65,
     height: 65,
+
     borderRadius: 35,
   },
 
   infoContainer: {
     flex: 1,
+
     marginLeft: 14,
   },
 
   name: {
     fontSize: 17,
+
     fontWeight: '700',
-    color: '#000',
   },
 
   status: {
     marginTop: 5,
-    color: 'gray',
+
     fontSize: 13,
   },
 
   chatBtn: {
     width: 42,
     height: 42,
-    borderRadius: 21,
 
-    backgroundColor: '#2e64e5',
+    borderRadius: 21,
 
     justifyContent: 'center',
     alignItems: 'center',

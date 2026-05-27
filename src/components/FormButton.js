@@ -1,32 +1,47 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
-import {windowHeight, windowWidth} from '../utils/Dimentions';
-import { SIZES,FONT_SIZE,COLORS,BORDER_RADIUS,ELEVATION } from '../styles';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { windowHeight } from '../utils/Dimentions';
+import { SIZES, FONT_SIZE, COLORS, BORDER_RADIUS } from '../styles';
+import useTheme from '../theme/useTheme';
 
-const FormButton = ({buttonTitle, ...rest}) => {
+const FormButton = ({ buttonTitle, ...rest }) => {
+  const { theme } = useTheme();
+
   return (
-    <TouchableOpacity {...rest} style={styles.buttonContainer} >
-        <Text style={styles.buttonText}>{buttonTitle} </Text>
+    <TouchableOpacity
+      {...rest}
+      style={[
+        styles.buttonContainer,
+        {
+          backgroundColor: theme.button,
+        },
+      ]}
+    >
+      <Text style={styles.buttonText}>{buttonTitle}</Text>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
-export default FormButton
+export default FormButton;
 
 const styles = StyleSheet.create({
-    buttonContainer: {
-    marginTop: SIZES.extraSmall, //10
+  buttonContainer: {
+    marginTop: SIZES.extraSmall,
+
     width: '100%',
     height: windowHeight / 15,
-    backgroundColor: COLORS.blue, //2e64e5
-    padding: SIZES.extraSmall, //10 
+
+    padding: SIZES.extraSmall,
+
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: BORDER_RADIUS.s, //3
+
+    borderRadius: BORDER_RADIUS.s,
   },
+
   buttonText: {
-    fontSize: FONT_SIZE.m, //18
+    fontSize: FONT_SIZE.m,
     fontWeight: 'bold',
-    color: COLORS.white, //ffffff
+    color: COLORS.white,
   },
-})
+});
