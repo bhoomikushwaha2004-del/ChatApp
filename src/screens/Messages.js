@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -6,6 +6,7 @@ import {
   Platform,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import firestore, { FieldValue } from '@react-native-firebase/firestore';
@@ -24,6 +25,7 @@ const Messages = () => {
   const [lastDoc, setLastDoc] = useState(null);
   const [sending, setSending] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [scrollBtn, setScrollBtn] = useState(false);
 
   const currentUser = auth().currentUser;
 
@@ -31,6 +33,8 @@ const Messages = () => {
   const otherUser = route.params?.otherUser;
 
   const { theme, darkMode } = useTheme();
+
+  const flatRef = useRef(null);
 
   if (!otherUser) {
     return null;
@@ -43,19 +47,13 @@ const Messages = () => {
 
   const typingStatus = async typing => {
     try {
-      await firestore()
-        .collection('users')
-
-        .doc(currentUser.uid)
-
-        .set(
-          {
-            isTyping: typing,
-            typingTo: otherUser.uid,
-          },
-
-          { merge: true },
-        );
+      await firestore().collection('users').doc(currentUser.uid).set(
+        {
+          isTyping: typing,
+          typingTo: otherUser.uid,
+        },
+        { merge: true },
+      );
     } catch (err) {
       console.log(err);
     }
@@ -86,28 +84,20 @@ const Messages = () => {
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('chats')
-
       .doc(roomId)
-
       .collection('messages')
-
       .orderBy('createdAt', 'desc')
-
       .limit(15)
-
       .onSnapshot(async snapshot => {
         firestore()
           .collection('chats')
-
           .doc(roomId)
-
           .set(
             {
               unreadCount: {
                 [currentUser.uid]: 0,
               },
             },
-
             { merge: true },
           );
 
@@ -150,61 +140,42 @@ const Messages = () => {
 
       await firestore()
         .collection('chats')
-
         .doc(roomId)
-
         .collection('messages')
-
         .add({
           text: message,
-
           senderId: currentUser.uid,
-
           senderName: currentUser.displayName || 'no name',
-
           createdAt: new Date(),
-
           status: 'sent',
         });
 
       await firestore()
         .collection('chats')
-
         .doc(roomId)
-
         .set(
           {
             participants: [currentUser.uid, otherUser.uid],
-
             users: [
               {
                 uid: currentUser.uid,
-
                 name: currentUser.displayName || 'No Name',
-
                 image: currentUser.photoURL || '',
               },
-
               {
                 uid: otherUser.uid,
-
                 name: otherUser.name,
-
                 image: otherUser.image || '',
               },
             ],
-
             lastMessage: message,
-
             updatedAt: new Date(),
 
             unreadCount: {
               [currentUser.uid]: 0,
-
               [otherUser.uid]: FieldValue.increment(1),
             },
           },
-
           { merge: true },
         );
 
@@ -230,17 +201,11 @@ const Messages = () => {
 
       const newMessages = await firestore()
         .collection('chats')
-
         .doc(roomId)
-
         .collection('messages')
-
         .orderBy('createdAt', 'desc')
-
         .startAfter(lastDoc)
-
         .limit(15)
-
         .get();
 
       if (!newMessages.empty) {
@@ -250,7 +215,6 @@ const Messages = () => {
         }));
 
         setMessages(prev => [...prev, ...olderMessages]);
-
         setLastDoc(newMessages.docs[newMessages.docs.length - 1]);
       }
     } catch (err) {
@@ -329,6 +293,17 @@ const Messages = () => {
             </>
           );
         }}
+        ref={flatRef}
+        onScroll={event => {
+          const offset = event.nativeEvent.contentOffset.y;
+
+          if (offset > 300) {
+            setScrollBtn(true);
+          } else {
+            setScrollBtn(false);
+          }
+        }}
+        scrollEventThrottle={16}
         inverted
         onEndReached={loadMoreMessages}
         onEndReachedThreshold={0.3}
@@ -340,24 +315,12 @@ const Messages = () => {
               color={darkMode ? '#666' : COLORS.greyest}
             />
 
-            <Text
-              style={[
-                styles.emptyText,
-                {
-                  color: theme.text,
-                },
-              ]}
-            >
+            <Text style={[styles.emptyText, { color: theme.text }]}>
               No Chats Yet
             </Text>
 
             <Text
-              style={[
-                styles.subText,
-                {
-                  color: darkMode ? '#B0B0B0' : 'gray',
-                },
-              ]}
+              style={[styles.subText, { color: darkMode ? '#B0B0B0' : 'gray' }]}
             >
               Start messaging to see chats here
             </Text>
@@ -367,6 +330,20 @@ const Messages = () => {
           padding: SIZES.smallest,
         }}
       />
+      {scrollBtn && (
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={[styles.scrollbtn,]}
+          onPress={() =>
+            flatRef.current?.scrollToOffset({
+              offset: 0,
+              animated: true,
+            })
+          }
+        >
+          <NoChat name='arrow-down' size={20} color={COLORS.secondary} />
+        </TouchableOpacity>
+      )}
 
       <MessagesInput
         message={message}
@@ -384,45 +361,42 @@ const styles = StyleSheet.create({
   container: {
     flex: SIZES.xtraXtraXtraS,
   },
-
   dateContainer: {
     alignSelf: 'center',
-
     paddingHorizontal: 12,
     paddingVertical: 5,
-
     borderRadius: 10,
-
     marginVertical: 10,
   },
-
   dateText: {
     fontSize: 12,
-
     fontWeight: '600',
   },
-
   emptyContainer: {
     justifyContent: 'center',
-
     alignItems: 'center',
-
     alignSelf: 'center',
-
     alignContent: 'center',
   },
-
   emptyText: {
     fontSize: FONT_SIZE.l,
-
     fontWeight: '700',
-
     marginTop: SIZES.xxs,
   },
-
   subText: {
     marginTop: SIZES.xtraExtras,
-
     fontSize: FONT_SIZE.xs,
   },
+  scrollbtn:{
+    position:'absolute',
+    right:20,
+    bottom:80,
+    width:50,
+    height:50,
+    borderRadius:25,
+    justifyContent:'center',
+    alignItems:'center',
+    elevation:5,
+    backgroundColor:'grey'
+  }
 });

@@ -70,16 +70,6 @@ const Profile = () => {
           style={styles.image}
         />
 
-        <Text
-          style={[
-            styles.title,
-            {
-              color: theme.text,
-            },
-          ]}
-        >
-          My Profile
-        </Text>
 
         <Text
           style={[

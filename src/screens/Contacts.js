@@ -147,7 +147,6 @@ const Contacts = () => {
 
 export default Contacts;
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
